@@ -38,7 +38,7 @@ Build a Manifest V3 browser extension on the Cy4Secure SDK that protects a hoste
 3. Call the CSA (Cy4Secure Authority) to fetch or create the Control Key — a 200-character hex value. Store the Control Key ID.
 4. Call `PUT /cy4/session` to register your Control Key ID with the vendor so it knows which key to reference.
 
-**Commands:**
+**Commands (curl):**
 
 ```bash
 # 1a. Sign in to Wekan, get your token
@@ -52,15 +52,57 @@ curl -s https://board.cy4challenge.com/cy4/session \
   -H "Authorization: Bearer <token>"
 # Returns: {"userId": "...", "controlKeyId": null}
 
-# 1c. Create the Control Key — done via SDK in the extension's service worker
-#     (The SDK handles CSA auth and key creation programmatically)
-
-# 1d. Register your Control Key ID with the vendor
+# 1d. Register your Control Key ID with the vendor (after SDK creates it)
 curl -s -X PUT https://board.cy4challenge.com/cy4/session \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{"controlKeyId": "<controlKeyId>"}'
 ```
+
+**SDK code (service worker) — create the Control Key via CSA:**
+
+```javascript
+// Build the SDK client the way the Act II kit does:
+//   /challenge/labs/build/cy4kit.live.mjs shows the config shape.
+// The SDK in the starter is the browser build — import it in the service worker.
+
+async function initControlKey(client, clerkAccountId, token) {
+  // Check if a Control Key is already registered with the vendor
+  const session = await fetch("https://board.cy4challenge.com/cy4/session", {
+    headers: { "Authorization": `Bearer ${token}` }
+  }).then(r => r.json());
+
+  if (session.controlKeyId) {
+    // Already set — fetch the key material from the CSA
+    const controlKey = await client.getKey(session.controlKeyId);
+    return controlKey;
+  }
+
+  // No Control Key yet — create one via the CSA.
+  // The key is 200 hex characters, owned by CLERK, held only by CLERK.
+  // The CSA stores the value; the vendor only ever sees the ID.
+  const controlKey = await client.createKey({
+    owner: clerkAccountId,
+    type:  "control"          // the SDK knows this means a 200-char hex key
+  });
+
+  // Register the key's ID with the vendor
+  await fetch("https://board.cy4challenge.com/cy4/session", {
+    method:  "PUT",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type":  "application/json"
+    },
+    body: JSON.stringify({ controlKeyId: controlKey.id })
+  });
+
+  // Pass the key material to the SDK client as its Control Key
+  client.setControlKey(controlKey);
+  return controlKey;
+}
+```
+
+> **Why this matters:** The vendor stores only the Control Key's ID, never the value. The CSA decides who can fetch the actual key. Knowing the ID alone gives nobody access — only accounts with a CSA grant can retrieve it.
 
 **Finding your boardId and listId:**
 
@@ -87,13 +129,56 @@ curl -s https://board.cy4challenge.com/api/boards/<boardId>/lists \
    - Other fields: choose `cle` or `fle` as appropriate
 4. Store a local copy of the schema as your Local Policy — this is your minimum-protection floor for Step 9.
 
-**Commands:**
+**SDK code (service worker) — create the CLE pool and FLE keys:**
+
+```javascript
+async function createKeysAndSchema(client, clerkAccountId, boardId, token) {
+  // --- CLE pool: 10 keys in one CSA call ---
+  // All 10 are owned by CLERK. The pool lets CLE spread identical titles
+  // across up to 10 ciphertexts (SHA-256 mod 10 picks the slot).
+  const clePool = await client.createKeys({
+    count: 10,
+    owner: clerkAccountId,
+    type:  "CLE"
+  });
+  const poolKeyIds = clePool.map(k => k.id);
+
+  // --- FLE keys are created per-value at encrypt time (Step 3) ---
+  // You don't pre-create FLE keys here; each encryption call mints one.
+
+  // --- Build and write the schema ---
+  const schema = {
+    version: 1,
+    fields: {
+      "card.title":        { mode: "cle", security: "S", pool: poolKeyIds },
+      "card.description":  { mode: "fle" },
+      "comment.comment":   { mode: "fle" },
+      "customField.value": { mode: "none" }
+    }
+  };
+
+  await fetch(`https://board.cy4challenge.com/cy4/schema/${boardId}`, {
+    method:  "PUT",
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type":  "application/json"
+    },
+    body: JSON.stringify(schema)
+  });
+
+  // --- Store the schema as the Local Policy (Step 9 needs this) ---
+  // The local policy is the minimum protection floor. If the vendor ever
+  // returns a schema weaker than this, refuse it.
+  await chrome.storage.local.set({ localPolicy: schema });
+
+  return { poolKeyIds, schema };
+}
+```
+
+**Verify with curl:**
 
 ```bash
-# 2a. Generate 10 CLE keys and FLE keys — done via SDK in the extension
-#     (CSA calls, not direct curl to the board)
-
-# 2b. Write the schema to the vendor
+# 2b. Write the schema to the vendor (or let the SDK code above do it)
 curl -s -X PUT https://board.cy4challenge.com/cy4/schema/<boardId> \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
@@ -134,7 +219,111 @@ This is the core engineering challenge. Wekan uses Meteor's DDP protocol over We
 3. **Draft leakage** — Wekan sends partial text to the server as you type, before you click Save. You must intercept these draft/typing events too and either encrypt them or suppress them entirely. Suppressing is simpler and safer.
 4. The encrypted output must be in nomadic ciphertext format: `CY41GHFLE<key-id>...` or `CY41GHCLE<key-id>...` — self-describing so any holder of the right key can decrypt without needing the schema.
 
-**No curl commands** — this is all extension code. Key points from the PDF:
+**No curl commands** — this is all extension code.
+
+**SDK code (content script) — WebSocket interception and outbound encryption:**
+
+```javascript
+// --- Content script: replace the native WebSocket ---
+// Runs in the page's world (via manifest "world": "MAIN") so it can
+// intercept Meteor's DDP connection before it opens.
+
+const OriginalWebSocket = window.WebSocket;
+
+window.WebSocket = function(url, protocols) {
+  const ws = new OriginalWebSocket(url, protocols);
+
+  // Intercept outbound messages
+  const originalSend = ws.send.bind(ws);
+  ws.send = async function(data) {
+    const msg = JSON.parse(data);
+
+    // DDP method calls carry: { msg: "method", method: "...", params: [...] }
+    if (msg.msg === "method") {
+      if (msg.method === "/cards/insertAsync") {
+        // msg.params[0] has { title, ... }
+        msg.params[0].title = await encryptCLE(msg.params[0].title);
+        if (msg.params[0].description) {
+          msg.params[0].description = await encryptFLE(msg.params[0].description);
+        }
+      } else if (msg.method === "/cards/update") {
+        // msg.params typically: [cardId, { $set: { field: value } }]
+        const modifier = msg.params[1]?.$set || {};
+        if (modifier.title)       modifier.title       = await encryptCLE(modifier.title);
+        if (modifier.description) modifier.description = await encryptFLE(modifier.description);
+      } else if (msg.method === "/card_comments/insert") {
+        msg.params[0].comment = await encryptFLE(msg.params[0].comment);
+      }
+      // --- Draft leakage: suppress or encrypt draft-save methods ---
+      // Wekan sends partial text while you type. Either:
+      //   - Drop draft methods entirely (return without calling originalSend)
+      //   - Or encrypt them the same way
+      // Suppressing is simpler and safer:
+      else if (msg.method?.includes("draft")) {
+        return; // swallow — plaintext never leaves the browser
+      }
+    }
+
+    originalSend(JSON.stringify(msg));
+  };
+
+  return ws;
+};
+
+// --- CLE encryption: deterministic key selection from the pool ---
+async function encryptCLE(plaintext) {
+  // SHA-256 of the plaintext bytes → first byte mod 10 → pool index
+  const hash = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(plaintext)
+  );
+  const firstByte  = new Uint8Array(hash)[0];
+  const poolIndex  = firstByte % poolKeyIds.length;   // poolKeyIds from Step 2
+  const keyId      = poolKeyIds[poolIndex];
+
+  // Ask the service worker (which holds the SDK) to encrypt
+  const response = await chrome.runtime.sendMessage({
+    action: "encrypt",
+    plaintext,
+    keyId,
+    mode: "cle"
+  });
+  return response.ciphertext; // e.g. "CY41GHCLE<keyId>..."
+}
+
+// --- FLE encryption: a new key every time ---
+async function encryptFLE(plaintext) {
+  const response = await chrome.runtime.sendMessage({
+    action: "encrypt",
+    plaintext,
+    mode: "fle"   // service worker creates a new key per call
+  });
+  return response.ciphertext; // e.g. "CY41GHFLE<keyId>..."
+}
+```
+
+**Service worker side (handles encrypt messages from the content script):**
+
+```javascript
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  if (msg.action === "encrypt") {
+    (async () => {
+      let key;
+      if (msg.mode === "cle") {
+        key = await client.getKey(msg.keyId);
+      } else {
+        // FLE: mint a fresh key for this value
+        key = await client.createKey({ owner: clerkAccountId, type: "FLE" });
+      }
+      const ciphertext = await client.encrypt(msg.plaintext, key, { mode: msg.mode });
+      sendResponse({ ciphertext });
+    })();
+    return true; // keep the message channel open for async response
+  }
+});
+```
+
+**Key points from the PDF:**
 
 - The live connection is a native WebSocket at `wss://board.cy4challenge.com/sockjs/<n>/<id>/websocket`
 - A content script can replace `WebSocket`, rewrite what is sent, and wrap what arrives (`onmessage` and `addEventListener`)
@@ -151,10 +340,95 @@ This is the core engineering challenge. Wekan uses Meteor's DDP protocol over We
 4. Replace the ciphertext with plaintext in the client-side collection so the UI renders readable cards.
 5. **Activity log:** Wekan copies card titles into activity log entries. These also arrive as collection updates — decrypt them too, or they'll show ciphertext in the sidebar.
 
-**No curl commands** — extension code. Key points:
+**SDK code (content script) — inbound decryption on DDP messages:**
+
+```javascript
+// --- Inside the WebSocket wrapper from Step 3, intercept inbound messages ---
+// Add this to the WebSocket replacement, wrapping onmessage / addEventListener:
+
+function wrapInbound(ws) {
+  const originalAddEventListener = ws.addEventListener.bind(ws);
+  ws.addEventListener = function(type, listener, options) {
+    if (type === "message") {
+      const wrappedListener = async function(event) {
+        const data = await decryptInboundDDP(event.data);
+        const newEvent = new MessageEvent("message", { data });
+        listener.call(ws, newEvent);
+      };
+      originalAddEventListener(type, wrappedListener, options);
+    } else {
+      originalAddEventListener(type, listener, options);
+    }
+  };
+}
+
+async function decryptInboundDDP(raw) {
+  const msg = JSON.parse(raw);
+
+  // DDP pushes: { msg: "added"|"changed", collection: "cards", fields: {...} }
+  if ((msg.msg === "added" || msg.msg === "changed") && msg.fields) {
+    for (const [field, value] of Object.entries(msg.fields)) {
+      if (typeof value === "string" && value.startsWith("CY41GH")) {
+        msg.fields[field] = await decryptValue(value);
+      }
+    }
+  }
+  return JSON.stringify(msg);
+}
+
+async function decryptValue(ciphertext) {
+  // Nomadic ciphertext is self-describing:
+  //   CY41GHCLE<keyId>... or CY41GHFLE<keyId>...
+  // The key ID is embedded — extract it and ask the service worker to decrypt.
+  try {
+    const response = await chrome.runtime.sendMessage({
+      action: "decrypt",
+      ciphertext
+    });
+    if (response.error === "no_access") {
+      return "[Access denied — no key grant]";  // OUTSIDER without grant
+    }
+    if (response.error === "tampered") {
+      return "[WARNING: Value has been tampered with]";  // integrity failure
+    }
+    return response.plaintext;
+  } catch (err) {
+    return "[Decryption failed]";
+  }
+}
+```
+
+**Service worker side (handles decrypt messages):**
+
+```javascript
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  if (msg.action === "decrypt") {
+    (async () => {
+      try {
+        // The SDK parses the CY41GH header, extracts the key ID,
+        // fetches the key from CSA (or cache), and decrypts.
+        const plaintext = await client.decrypt(msg.ciphertext);
+        sendResponse({ plaintext });
+      } catch (err) {
+        if (err.code === "KEY_ACCESS_DENIED") {
+          sendResponse({ error: "no_access" });
+        } else if (err.code === "INTEGRITY_FAILURE") {
+          sendResponse({ error: "tampered" });
+        } else {
+          sendResponse({ error: "unknown", message: err.message });
+        }
+      }
+    })();
+    return true;
+  }
+});
+```
+
+**Key points:**
 
 - The page keeps its data in client-side collections: `Package.mongo.Mongo.getCollection("cards")`, same for `card_comments`, `customFields`, etc.
 - After a reload the page repaints from them, which is where decrypting for display can happen
+- Activity log entries also carry card titles — decrypt those too or the sidebar shows ciphertext
 - Check these: open a card and see the description; reload the page and see it again; change a card in a second tab as CLERK and see the first tab show the change, readable
 
 ---
@@ -194,6 +468,37 @@ curl -s https://board.cy4challenge.com/users/login \
 
 - **Programmatically:** SDK calls from the extension's service worker (what the mission means by "CSA's key-grant mechanism")
 - **Via Portal UI:** Key Management -> Account Access Control (requires VPN connection to the Portal)
+
+**SDK code (service worker) — grant and revoke key access:**
+
+```javascript
+// Grant OUTSIDER read access to one specific FLE key (one card's description).
+// The key ID comes from the ciphertext of the description you want to share:
+//   CY41GHFLE<keyId>... → extract keyId
+
+async function grantKeyToOutsider(client, keyId, outsiderAccountId) {
+  await client.grantKey({
+    keyId:     keyId,
+    grantee:   outsiderAccountId,
+    access:    "read"     // read-only — OUTSIDER can decrypt but not re-encrypt
+  });
+  console.log(`Granted key ${keyId} to ${outsiderAccountId}`);
+}
+
+async function revokeKeyFromOutsider(client, keyId, outsiderAccountId) {
+  await client.revokeKey({
+    keyId:     keyId,
+    grantee:   outsiderAccountId
+  });
+  console.log(`Revoked key ${keyId} from ${outsiderAccountId}`);
+}
+
+// Usage — run these from the extension's options page or a dev console call:
+// grantKeyToOutsider(client, "<fleKeyId>", "<outsiderAccountId>");
+// revokeKeyFromOutsider(client, "<fleKeyId>", "<outsiderAccountId>");
+```
+
+> **Via the Portal UI (alternative):** Connect to VPN, open the Portal, navigate to Key Management -> Account Access Control, select the FLE key ID, add the OUTSIDER account, set access to "read", and save. To revoke, remove the OUTSIDER from the key's access list.
 
 **Screenshots needed (3):**
 1. Before grant — OUTSIDER sees ciphertext
@@ -264,7 +569,7 @@ curl -s https://board.cy4challenge.com/cy4/vendor/board/<boardId> \
 3. The extension must refuse the downgrade — it should either reject the schema and keep using the local policy, or alert the user and block outbound writes until the schema is restored.
 4. Demonstrate that after the attempted downgrade, data is still encrypted at the original protection level.
 
-**Commands:**
+**Simulate the attack (curl):**
 
 ```bash
 # 9a. As the "attacker" (vendor), downgrade card.description from fle to none
@@ -285,6 +590,62 @@ curl -s -X PUT https://board.cy4challenge.com/cy4/schema/<boardId> \
 #     The extension should detect the downgrade, refuse it, and keep
 #     encrypting at the original level.
 ```
+
+**SDK code (service worker) — local policy enforcement:**
+
+```javascript
+// Protection strength ranking: fle > cle > none
+const MODE_STRENGTH = { none: 0, cle: 1, fle: 2 };
+
+async function fetchAndValidateSchema(boardId, token) {
+  // Fetch the vendor's current schema
+  const vendorSchema = await fetch(
+    `https://board.cy4challenge.com/cy4/schema/${boardId}`,
+    { headers: { "Authorization": `Bearer ${token}` } }
+  ).then(r => r.json());
+
+  // Load the local policy (stored in Step 2)
+  const { localPolicy } = await chrome.storage.local.get("localPolicy");
+
+  if (!localPolicy) {
+    // First run — accept the vendor schema and store it as the floor
+    await chrome.storage.local.set({ localPolicy: vendorSchema });
+    return vendorSchema;
+  }
+
+  // Compare each field: the vendor must not go below the local minimum
+  for (const [field, policy] of Object.entries(localPolicy.fields)) {
+    const vendorMode = vendorSchema.fields?.[field]?.mode ?? "none";
+    const policyMode = policy.mode;
+
+    if (MODE_STRENGTH[vendorMode] < MODE_STRENGTH[policyMode]) {
+      console.error(
+        `SCHEMA DOWNGRADE DETECTED: "${field}" ` +
+        `vendor=${vendorMode}, policy=${policyMode}. Refusing.`
+      );
+      // Fail closed — use the local policy, not the vendor's weakened schema
+      return localPolicy;
+    }
+
+    // Also verify pool key IDs haven't been swapped (CLE fields)
+    if (policyMode === "cle" && policy.pool) {
+      const vendorPool = vendorSchema.fields[field]?.pool || [];
+      const policyPool = policy.pool;
+      if (JSON.stringify(vendorPool.sort()) !== JSON.stringify(policyPool.sort())) {
+        console.warn(`Pool keys changed for "${field}" — verify with user`);
+      }
+    }
+  }
+
+  // Also check the Control Key ID matches what we expect
+  const { expectedControlKeyId } = await chrome.storage.local.get("expectedControlKeyId");
+  // (Store this alongside the local policy in Step 1)
+
+  return vendorSchema; // passed validation
+}
+```
+
+> **Key concept:** The local policy holds the minimum mode per field and the Control Key ID the extension expects. The vendor controls the schema endpoint — without this client-side floor, a compromised vendor could silently set every field to `none` and receive plaintext.
 
 **Screenshot needed:** Extension refusing the downgraded schema + the local policy that triggered the refusal.
 
@@ -350,7 +711,60 @@ For each, the extension must show something distinct:
 3. Store tokens with their expiry timestamps in the service worker's state (or `chrome.storage.session`).
 4. Demonstrate the extension works after a long idle period (let the service worker sleep for several minutes, then interact with the board).
 
-**No curl commands** — extension code. Token refresh uses `POST /users/login` to get a new token when the current one expires. Log each refresh with the old and new `iat` and `exp` (never the raw token).
+**SDK code (service worker) — token refresh with expiry check:**
+
+```javascript
+// Store token state in chrome.storage.session (survives service worker restarts
+// within the same browser session, but not across browser restarts — which is fine).
+
+async function getValidToken() {
+  const { tokenData } = await chrome.storage.session.get("tokenData");
+
+  if (tokenData) {
+    // Decode the JWT payload to check exp (seconds since epoch)
+    const payload = JSON.parse(atob(tokenData.token.split(".")[1]));
+    const nowSec  = Math.floor(Date.now() / 1000);
+    const buffer  = 60; // refresh 60s before actual expiry
+
+    if (payload.exp - nowSec > buffer) {
+      return tokenData.token; // still valid
+    }
+
+    // Expiring soon — log the old timestamps
+    console.log(`Token expiring: iat=${new Date(payload.iat * 1000).toISOString()}, ` +
+                `exp=${new Date(payload.exp * 1000).toISOString()}`);
+  }
+
+  // Re-authenticate to get a fresh token
+  const { credentials } = await chrome.storage.local.get("credentials");
+  const res = await fetch("https://board.cy4challenge.com/users/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      username: credentials.username,
+      password: credentials.password
+    })
+  }).then(r => r.json());
+
+  // Log the new timestamps (never the raw token)
+  const newPayload = JSON.parse(atob(res.token.split(".")[1]));
+  console.log(`Token refreshed: iat=${new Date(newPayload.iat * 1000).toISOString()}, ` +
+              `exp=${new Date(newPayload.exp * 1000).toISOString()}`);
+
+  // Cache the new token
+  await chrome.storage.session.set({
+    tokenData: { token: res.token, id: res.id }
+  });
+
+  return res.token;
+}
+
+// Call getValidToken() before every CSA call or board API call.
+// The service worker may have been dead for minutes — the old token
+// it fetched at startup may no longer exist.
+```
+
+> **Why `chrome.storage.session`:** A service worker wakes and sleeps at the browser's pace. In-memory variables are lost on each sleep cycle. `chrome.storage.session` persists within the browser session but is cleared on restart — a good fit for tokens.
 
 **Screenshot needed:** Refresh log lines showing old and new `iat`/`exp` timestamps.
 
@@ -364,7 +778,92 @@ For each, the extension must show something distinct:
 4. **Avoid governance triggers** — rapid sequential key fetches may trip the CSA's behavioral governance (from Act III). Batching and caching prevent this.
 5. Demonstrate with a board of 25+ cards loading smoothly without lag or errors.
 
-**No curl commands** — extension code.
+**SDK code (service worker) — batch key fetching and caching:**
+
+```javascript
+// --- In-memory key cache (lives as long as the service worker is awake) ---
+const keyCache = new Map();
+
+// Also persist to chrome.storage.session so keys survive a SW restart
+async function loadCacheFromStorage() {
+  const { cachedKeys } = await chrome.storage.session.get("cachedKeys");
+  if (cachedKeys) {
+    for (const [id, key] of Object.entries(cachedKeys)) {
+      keyCache.set(id, key);
+    }
+  }
+}
+
+async function persistCache() {
+  const obj = Object.fromEntries(keyCache);
+  await chrome.storage.session.set({ cachedKeys: obj });
+}
+
+// --- Batch fetch: collect all unique key IDs, deduplicate, fetch in one call ---
+async function batchFetchKeys(keyIds) {
+  const uniqueIds = [...new Set(keyIds)];
+  const missing   = uniqueIds.filter(id => !keyCache.has(id));
+
+  if (missing.length === 0) {
+    console.log(`All ${uniqueIds.length} keys served from cache`);
+    return;
+  }
+
+  console.log(`Fetching ${missing.length} keys (${uniqueIds.length - missing.length} cached)`);
+
+  // Fetch all missing keys in one SDK call (avoids N sequential CSA round-trips
+  // and the behavioral governance trigger from Act III)
+  const keys = await client.getKeys(missing);
+
+  for (const key of keys) {
+    keyCache.set(key.id, key);
+  }
+
+  await persistCache();
+  console.log(`Key cache now holds ${keyCache.size} keys`);
+}
+
+// --- Use this when the page loads and collections arrive ---
+// Collect key IDs from all visible ciphertext, then batch-fetch before decrypting.
+
+async function decryptBoardOnLoad(cards) {
+  // 1. Scan all encrypted fields for key IDs
+  const keyIds = [];
+  for (const card of cards) {
+    for (const value of [card.title, card.description]) {
+      if (typeof value === "string" && value.startsWith("CY41GH")) {
+        const keyId = extractKeyId(value); // parse the CY41GH header
+        keyIds.push(keyId);
+      }
+    }
+  }
+
+  // 2. Batch fetch all unique keys in one call
+  await batchFetchKeys(keyIds);
+
+  // 3. Decrypt each field using cached keys (no more network calls)
+  for (const card of cards) {
+    if (card.title?.startsWith("CY41GH")) {
+      card.title = await client.decrypt(card.title); // uses cached key
+    }
+    if (card.description?.startsWith("CY41GH")) {
+      card.description = await client.decrypt(card.description);
+    }
+  }
+}
+
+function extractKeyId(ciphertext) {
+  // Nomadic format: CY41GH + mode(3) + keyId + payload
+  // The exact offset depends on the SDK's format spec
+  const modeLen = 3; // "CLE" or "FLE"
+  const prefix  = "CY41GH";
+  const afterMode = ciphertext.substring(prefix.length + modeLen);
+  // Key ID is typically a fixed-length hex string — check your SDK docs
+  return afterMode.substring(0, 24); // adjust length to your SDK's key ID format
+}
+```
+
+> **Why batching matters:** 25 encrypted cards = up to 25 unique keys. Sequential fetches take 25 round-trips to the CSA and may trigger behavioral governance (Act III lockout: 10 failed calls in 6 minutes can lock the account for up to an hour). One batched call with deduplication avoids both problems.
 
 **Screenshot needed:** Board with 25+ encrypted cards loading smoothly, or logs showing batched/cached key fetches.
 

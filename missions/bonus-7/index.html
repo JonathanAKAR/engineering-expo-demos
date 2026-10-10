@@ -779,7 +779,7 @@ function runLiveDemo() {
     status.className = 'live-status ok';
     status.textContent = 'Phase 1 complete — ' + (phaseData[1] || []).length + ' lines. Advancing...';
 
-    setTimeout(() => startPhaseChain(2), 3000);
+    setTimeout(() => startPhaseChain(2), 6000);
   });
 
   es.addEventListener('error', () => {
@@ -809,7 +809,7 @@ async function startPhaseChain(startPhase) {
     go(PHASE_SLIDES[p], true);
     await typewritePhase(p);
     if (!autoAdvancing) return;
-    await sleep(3000);
+    await sleep(6000);
   }
   if (autoAdvancing) {
     autoAdvancing = false;

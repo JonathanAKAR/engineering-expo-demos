@@ -41,13 +41,13 @@ body {
   line-height: 1.6;
 }
 
-/* ---- Slideshow ---- */
 .slideshow { position: relative; width: 100%; height: 100%; }
 .slide {
   position: absolute; inset: 0;
   display: flex; align-items: center; justify-content: center;
   opacity: 0; pointer-events: none;
   transition: opacity 0.6s ease;
+  overflow-y: auto;
 }
 .slide.active { opacity: 1; pointer-events: auto; }
 .slide-inner {
@@ -61,14 +61,12 @@ body {
   .slide { transition: none; }
 }
 
-/* ---- Typography ---- */
 h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; text-wrap: balance; margin: 0; }
 h1 { font-size: clamp(2.2rem, 6vw, 3.5rem); font-weight: 800; letter-spacing: -0.025em; }
 h2 { font-size: clamp(1.4rem, 3.5vw, 2rem); font-weight: 700; letter-spacing: -0.015em; }
 h3 { font-size: 1rem; font-weight: 600; }
 p, li { margin: 0; }
 
-/* ---- Slide variants ---- */
 .slide-center { text-align: center; }
 .slide-center .slide-inner { margin: 0 auto; }
 .eyebrow {
@@ -86,7 +84,6 @@ p, li { margin: 0; }
 .hl-cipher { color: var(--cipher); }
 .hl-warn { color: var(--warn); }
 
-/* ---- Feature boxes ---- */
 .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 1.75rem; }
 .feat {
   background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
@@ -99,7 +96,6 @@ p, li { margin: 0; }
 }
 .feat p { font-size: 0.88rem; color: var(--fg-muted); line-height: 1.55; }
 
-/* ---- Stats ---- */
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1.25rem; margin-top: 2rem; }
 .stat {
   text-align: center; background: var(--surface); border: 1px solid var(--border);
@@ -113,7 +109,6 @@ p, li { margin: 0; }
 .stat-num.accent { color: var(--accent); }
 .stat-label { font-size: 0.75rem; color: var(--fg-muted); margin-top: 0.3rem; }
 
-/* ---- Impact list ---- */
 .impact-list { list-style: none; padding: 0; margin: 1.25rem 0 0; display: flex; flex-direction: column; gap: 0.6rem; }
 .impact-list li {
   font-size: 0.9rem; padding-left: 1.4rem; position: relative; color: var(--fg-muted);
@@ -125,7 +120,6 @@ p, li { margin: 0; }
 .impact-list.threat-dots li::before { background: var(--threat); }
 .impact-list.accent-dots li::before { background: var(--accent); }
 
-/* ---- Comparison ---- */
 .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 1.75rem; }
 .compare-col {
   background: var(--surface); border-radius: 10px; padding: 1.25rem;
@@ -146,7 +140,6 @@ p, li { margin: 0; }
 .flow-step:last-child { border-bottom: none; }
 .flow-step strong { color: var(--fg); }
 
-/* ---- Terminal ---- */
 .terminal {
   background: var(--code-bg); border-radius: 10px; overflow: hidden;
   border: 1px solid var(--border); margin-top: 1.25rem;
@@ -164,11 +157,12 @@ p, li { margin: 0; }
 }
 .term-body {
   padding: 16px 18px; overflow-x: auto;
-  max-height: 280px; overflow-y: auto;
+  max-height: 340px; overflow-y: auto;
 }
 .term-body pre {
-  margin: 0; font-family: var(--font-mono); font-size: 0.75rem;
-  line-height: 1.65; color: var(--code-fg); white-space: pre;
+  margin: 0; font-family: var(--font-mono); font-size: 0.72rem;
+  line-height: 1.6; color: var(--code-fg); white-space: pre-wrap;
+  word-break: break-all;
 }
 .term-footer {
   padding: 10px 18px;
@@ -176,7 +170,6 @@ p, li { margin: 0; }
   font-family: var(--font-mono); font-size: 0.72rem; color: var(--cmt);
 }
 
-/* ---- Callout ---- */
 .callout {
   margin-top: 1.5rem; padding: 1rem 1.25rem;
   border-left: 3px solid var(--accent); background: var(--accent-dim);
@@ -185,7 +178,6 @@ p, li { margin: 0; }
 }
 .callout.threat-callout { border-left-color: var(--threat); background: var(--threat-dim); }
 
-/* ---- Beyond grid ---- */
 .beyond { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
 .beyond-card {
   background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
@@ -201,7 +193,6 @@ p, li { margin: 0; }
   font-family: var(--font-mono); font-weight: 700;
 }
 
-/* ---- Nav ---- */
 .nav {
   position: fixed; bottom: 0; left: 0; right: 0;
   display: flex; align-items: center; justify-content: center; gap: 12px;
@@ -230,14 +221,12 @@ p, li { margin: 0; }
   flex-shrink: 0;
 }
 
-/* ---- Progress ---- */
 .progress {
   position: fixed; top: env(safe-area-inset-top, 0px); left: 0; right: 0;
   height: 3px; z-index: 11; background: rgba(255,255,255,0.04);
 }
 .progress-fill { height: 100%; width: 0; background: var(--accent); }
 
-/* ---- Pause indicator ---- */
 .pause-badge {
   position: fixed; top: calc(12px + env(safe-area-inset-top, 0px)); right: 16px;
   font-family: var(--font-mono); font-size: 0.65rem;
@@ -248,7 +237,39 @@ p, li { margin: 0; }
 }
 .pause-badge.visible { opacity: 1; }
 
-/* ---- Mobile ---- */
+/* ---- Live demo ---- */
+.run-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin-top: 1rem; padding: 10px 20px;
+  background: var(--accent); color: var(--bg); border: none; border-radius: 8px;
+  font-family: var(--font-mono); font-size: 0.82rem; font-weight: 600;
+  cursor: pointer; transition: opacity 0.2s;
+}
+.run-btn:hover { opacity: 0.85; }
+.run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.run-btn .spinner {
+  width: 14px; height: 14px; border: 2px solid rgba(0,0,0,0.2);
+  border-top-color: var(--bg); border-radius: 50%;
+  animation: spin 0.6s linear infinite; display: none;
+}
+.run-btn.loading .spinner { display: block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.live-status {
+  font-family: var(--font-mono); font-size: 0.7rem; margin-top: 0.5rem;
+  min-height: 1.2em;
+}
+.live-status.ok { color: var(--accent); }
+.live-status.err { color: var(--threat); }
+.live-status.pending { color: var(--warn); }
+
+.term-body pre .cy4-cipher { color: var(--cipher); }
+.term-body pre .cy4-masked { color: var(--threat); font-weight: 600; }
+.term-body pre .cy4-clear { color: var(--green); }
+.term-body pre .cy4-label { color: var(--accent); }
+.term-body pre .cy4-header { color: var(--num); font-weight: 600; }
+.term-body pre .cy4-sep { color: var(--cmt); }
+
 @media (max-width: 640px) {
   .compare { grid-template-columns: 1fr; }
   .stats { grid-template-columns: repeat(2, 1fr); }
@@ -416,98 +437,78 @@ p, li { margin: 0; }
     </div>
   </div>
 
-  <!-- 8. TECH DEMO: ENCRYPT -->
-  <div class="slide" data-dur="14000">
-    <div class="slide-inner">
-      <div class="eyebrow">Technical Demo</div>
-      <h2>Encrypt the Arsenal</h2>
-      <p class="subtitle" style="max-width:none">Each exploit's payload and analysis encrypted with its own key before storage.</p>
-      <div class="terminal">
+  <!-- 8. LIVE DEMO: RUN -->
+  <div class="slide slide-center" data-dur="30000" id="liveSlide">
+    <div class="slide-inner" style="max-width:940px;">
+      <div class="eyebrow">Live Technical Demo</div>
+      <h2>Encrypting the Arsenal <span class="hl-accent">Right Now</span></h2>
+      <p class="subtitle">Running the Cy4Secure SDK against 4 classified exploit records in a live Docker container.</p>
+      <button class="run-btn" id="runBtn" onclick="runLiveDemo()">
+        <span class="spinner"></span>
+        Run Exploit Vault Demo
+      </button>
+      <div class="live-status" id="liveStatus"></div>
+      <div class="terminal" style="margin-top:1rem; text-align:left;">
         <div class="term-bar">
           <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
-          <span class="term-title">exploit-vault-demo.mjs &mdash; encrypt</span>
+          <span class="term-title">docker exec cy4-challenge node exploit-vault-demo.mjs</span>
         </div>
-        <div class="term-body"><pre><span style="color:var(--cmt)">// Encrypt exploit data before writing to the classified database</span>
-<span style="color:var(--kw)">import</span> { <span style="color:var(--fn)">encryptField</span>, <span style="color:var(--fn)">newRecordKeyId</span> } <span style="color:var(--kw)">from</span> <span style="color:var(--str)">"cy4kit.live.mjs"</span>;
-
-<span style="color:var(--kw)">const</span> keyId = <span style="color:var(--fn)">newRecordKeyId</span>();   <span style="color:var(--cmt)">// fresh key from the CSA pool</span>
-
-<span style="color:var(--kw)">const</span> record = {
-  codename:      <span style="color:var(--str)">"EternalBlue"</span>,              <span style="color:var(--cmt)">// CLE &mdash; searchable</span>
-  cve:           <span style="color:var(--str)">"MS17-010"</span>,                  <span style="color:var(--cmt)">// clear &mdash; lookup</span>
-  target:        <span style="color:var(--str)">"Windows SMB v1"</span>,             <span style="color:var(--cmt)">// CLE &mdash; searchable</span>
-  description:   <span style="color:var(--kw)">await</span> <span style="color:var(--fn)">encryptField</span>(desc, keyId),  <span style="color:var(--cmt)">// &rarr; CY41GHFLE...</span>
-  payload_notes: <span style="color:var(--kw)">await</span> <span style="color:var(--fn)">encryptField</span>(payload, keyId),
-  analysis:      <span style="color:var(--kw)">await</span> <span style="color:var(--fn)">encryptField</span>(analysis, keyId),
-};
-
-<span style="color:var(--kw)">await</span> db.<span style="color:var(--fn)">insert</span>(<span style="color:var(--str)">"classified_arsenal"</span>, record);</pre></div>
-        <div class="term-footer">
-          description &rarr; <span style="color:var(--cipher)">CY41GHFLE9a3b7e21-4f08-4c12-a5d3-7e2f91b0...  (162 bytes sealed)</span>
+        <div class="term-body" style="max-height:360px;" id="liveTermBody">
+          <pre id="liveTerm" style="min-height:60px;">Waiting to run...</pre>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 9. TECH DEMO: AUTHORIZED READ -->
-  <div class="slide" data-dur="14000">
-    <div class="slide-inner">
-      <div class="eyebrow">Technical Demo</div>
-      <h2>Authorized Analyst <span class="hl-accent">Decrypts</span></h2>
-      <p class="subtitle" style="max-width:none">CSA grants the key. The field decrypts. Access is logged.</p>
-      <div class="terminal">
-        <div class="term-bar">
-          <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
-          <span class="term-title">exploit-vault-demo.mjs &mdash; authorized read</span>
+  <!-- 9. LIVE DEMO: CLERK vs OUTSIDER -->
+  <div class="slide" data-dur="18000" id="compareSlide">
+    <div class="slide-inner" style="max-width:940px;">
+      <div class="eyebrow">Live Results</div>
+      <h2>Authorized <span class="hl-accent">vs</span> Attacker</h2>
+      <p class="subtitle" style="max-width:none">Same ciphertext. Different roles. Different outcomes.</p>
+      <div class="compare" style="margin-top:1.25rem;">
+        <div class="compare-col good" style="padding:0; overflow:hidden;">
+          <div class="term-bar" style="border-bottom:1px solid rgba(45,212,191,0.2);">
+            <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
+            <span class="term-title" style="color:var(--accent);">clerk (authorized analyst)</span>
+          </div>
+          <div class="term-body" style="max-height:300px;">
+            <pre id="clerkTerm" style="font-size:0.7rem;">Waiting for live demo...</pre>
+          </div>
         </div>
-        <div class="term-body"><pre><span style="color:var(--cmt)">// Authorized analyst reads the exploit entry</span>
-<span style="color:var(--kw)">const</span> desc = <span style="color:var(--kw)">await</span> <span style="color:var(--fn)">decryptField</span>(
-  row.description,     <span style="color:var(--cmt)">// CY41GHFLE9a3b7e21-4f08-...</span>
-  <span style="color:var(--str)">"clerk"</span>,             <span style="color:var(--cmt)">// authorized role &rarr; CSA grants key</span>
-  <span style="color:var(--str)">"description"</span>
-);
-
-console.<span style="color:var(--fn)">log</span>(desc);
-<span style="color:var(--green)">// &rarr; "Remote code execution via buffer overflow in Windows</span>
-<span style="color:var(--green)">//    SMB server. Exploits a flaw in how SMBv1 handles</span>
-<span style="color:var(--green)">//    transaction requests..."</span>
-
-<span style="color:var(--cmt)">// The CSA logged: key 9a3b7e21 released to clerk at 14:32:07</span></pre></div>
+        <div class="compare-col bad" style="padding:0; overflow:hidden;">
+          <div class="term-bar" style="border-bottom:1px solid rgba(239,68,68,0.2);">
+            <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
+            <span class="term-title" style="color:var(--threat);">outsider (Shadow Brokers)</span>
+          </div>
+          <div class="term-body" style="max-height:300px;">
+            <pre id="outsiderTerm" style="font-size:0.7rem;">Waiting for live demo...</pre>
+          </div>
+        </div>
       </div>
-      <div class="terminal" style="margin-top:0.75rem;">
-        <div class="term-bar">
-          <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
-          <span class="term-title">exploit-vault-demo.mjs &mdash; outsider (Shadow Brokers)</span>
-        </div>
-        <div class="term-body"><pre><span style="color:var(--cmt)">// Shadow Brokers attempt to decrypt the stolen data</span>
-<span style="color:var(--kw)">const</span> desc = <span style="color:var(--kw)">await</span> <span style="color:var(--fn)">decryptField</span>(
-  row.description,
-  <span style="color:var(--str)">"outsider"</span>,          <span style="color:var(--cmt)">// no CSA grant for this account</span>
-  <span style="color:var(--str)">"description"</span>
-);
-console.<span style="color:var(--fn)">log</span>(desc);
-<span style="color:var(--threat)">// &rarr; "[masked]"</span>
-<span style="color:var(--cmt)">// CSA denied key 9a3b7e21 to outsider at 14:32:09</span>
-<span style="color:var(--cmt)">// The ciphertext is right there. It stays sealed.</span></pre></div>
+      <div class="callout" id="compareCallout" style="display:none;">
+        <strong>Live result:</strong> The clerk decrypted all fields. The outsider got <span class="hl-threat">[masked]</span> on every attempt.
+        Same database. Same ciphertext. The CSA decides who reads what.
       </div>
     </div>
   </div>
 
-  <!-- 10. STOLEN DATABASE VIEW -->
-  <div class="slide" data-dur="14000">
-    <div class="slide-inner">
-      <div class="eyebrow" style="color:var(--threat);">The Breach Scenario</div>
-      <h2>The Stolen Arsenal Database</h2>
-      <p class="subtitle" style="max-width:none">Every row stolen. Every payload <span class="hl-cipher">sealed</span>.</p>
-      <div class="terminal">
+  <!-- 10. LIVE DEMO: FULL LOG -->
+  <div class="slide" data-dur="16000">
+    <div class="slide-inner" style="max-width:940px;">
+      <div class="eyebrow" style="color:var(--cipher);">Complete SDK Output</div>
+      <h2>Full Terminal Log</h2>
+      <p class="subtitle" style="max-width:none">The complete output from the Cy4Secure SDK &mdash; every encrypt, decrypt, grant, and denial.</p>
+      <div class="terminal" style="margin-top:1rem;">
         <div class="term-bar">
           <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
-          <span class="term-title">SELECT * FROM classified_arsenal; &mdash; attacker's view</span>
+          <span class="term-title">exploit-vault-demo.mjs &mdash; full output</span>
         </div>
-        <div class="term-body"><pre id="dbView"></pre></div>
-        <div class="term-footer" style="display:flex; align-items:center; gap:10px;">
-          <span style="color:var(--accent);">&#x25cf;</span>
-          <span>4 rows returned. 0 payloads readable. Keys require CSA grant &mdash; attacker has none.</span>
+        <div class="term-body" style="max-height:400px;">
+          <pre id="fullTerm" style="font-size:0.68rem;">Waiting for live demo...</pre>
+        </div>
+        <div class="term-footer" id="fullTermFooter">
+          Run the demo on slide 8 to populate this view.
         </div>
       </div>
     </div>
@@ -592,29 +593,28 @@ console.<span style="color:var(--fn)">log</span>(desc);
 
 <script>
 const slides = document.querySelectorAll('.slide');
-const dots = document.getElementById('dots');
+const dotsEl = document.getElementById('dots');
 const counter = document.getElementById('counter');
 const fill = document.getElementById('progressFill');
 const badge = document.getElementById('pauseBadge');
 let cur = 0, timer = null, paused = false;
 
-// Build dots
 slides.forEach((_, i) => {
   const d = document.createElement('button');
   d.className = 'dot' + (i === 0 ? ' active' : '');
   d.setAttribute('aria-label', 'Go to slide ' + (i + 1));
   d.addEventListener('click', () => go(i));
-  dots.appendChild(d);
+  dotsEl.appendChild(d);
 });
 
 function dur() { return parseInt(slides[cur].dataset.dur) || 10000; }
 
 function go(n) {
   slides[cur].classList.remove('active');
-  dots.children[cur].classList.remove('active');
+  dotsEl.children[cur].classList.remove('active');
   cur = ((n % slides.length) + slides.length) % slides.length;
   slides[cur].classList.add('active');
-  dots.children[cur].classList.add('active');
+  dotsEl.children[cur].classList.add('active');
   counter.textContent = (cur + 1) + ' / ' + slides.length;
   resetTimer();
 }
@@ -656,27 +656,101 @@ document.addEventListener('keydown', e => {
   else if (e.key === ' ') { e.preventDefault(); togglePause(); }
 });
 
-// Render stolen DB table
-(function renderDB() {
-  const el = document.getElementById('dbView');
-  const c = (s, cl) => '<span style="color:var(--' + cl + ')">' + s + '</span>';
-  const ci = s => c(s, 'cipher');
-  const nm = s => c(s, 'green');
-  const hd = s => c(s, 'num');
-  const dv = c('|', 'cmt');
+// ---- Live demo ---- //
 
-  const hdr = hd('codename') + '         ' + dv + ' ' + hd('cve') + '       ' + dv + ' ' + hd('description') + '                                             ' + dv + ' ' + hd('payload_notes');
-  const sep = c('---------------|----------|--------------------------------------------------|-------------------------------------------------', 'cmt');
-  const rows = [
-    [nm('EternalBlue    '), 'MS17-010 ', ci('4f8a2c7e1b3d96...CY41GHFLE9a3b7e21-4f08-4c12'), ci('8f1c2e5a9b4d73...CY41GHFLE9a3b7e21-4f08-4c12')],
-    [nm('EternalRomance '), 'MS17-010 ', ci('5e2f8c194a7b36...CY41GHFLE2c8d4f15-7a93-4b21'), ci('2d7a4e9c1b5f38...CY41GHFLE2c8d4f15-7a93-4b21')],
-    [nm('DoublePulsar   '), 'N/A      ', ci('c3d8f72e1a4b96...CY41GHFLE4b7e2a93-1d56-4f08'), ci('4b8e1f2c5a9d73...CY41GHFLE4b7e2a93-1d56-4f08')],
-    [nm('EternalChampion'), 'MS17-010 ', ci('1b9e5f2c7a4d36...CY41GHFLE7d1c3e48-5f92-4a06'), ci('6c3a9e1f2b5d74...CY41GHFLE7d1c3e48-5f92-4a06')],
-  ];
-  el.innerHTML = hdr + '\n' + sep + '\n' + rows.map(r => r[0] + ' ' + dv + ' ' + r[1] + dv + ' ' + r[2] + ' ' + dv + ' ' + r[3]).join('\n');
-})();
+let demoOutput = null;
 
-// Init
+function colorize(text) {
+  return text
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/(CY41GH\w{3}[0-9a-f-]+[^\s]*)/g, '<span class="cy4-cipher">$1</span>')
+    .replace(/(\[masked\])/g, '<span class="cy4-masked">$1</span>')
+    .replace(/(={40,})/g, '<span class="cy4-sep">$1</span>')
+    .replace(/(\[PHASE \d\].*)/g, '<span class="cy4-header">$1</span>')
+    .replace(/(\[\+\])/g, '<span class="cy4-label">$1</span>')
+    .replace(/(SUMMARY)/g, '<span class="cy4-header">$1</span>')
+    .replace(/(CSA granted.*|CSA DENIED.*)/g, '<span class="cy4-label">$1</span>');
+}
+
+function extractSection(text, startMarker, endMarker) {
+  const start = text.indexOf(startMarker);
+  if (start === -1) return '';
+  const end = endMarker ? text.indexOf(endMarker, start + startMarker.length) : text.length;
+  return text.slice(start, end === -1 ? undefined : end).trim();
+}
+
+async function typewrite(el, html, speed) {
+  const lines = html.split('\n');
+  el.innerHTML = '';
+  for (let i = 0; i < lines.length; i++) {
+    el.innerHTML += (i > 0 ? '\n' : '') + lines[i];
+    el.scrollTop = el.scrollHeight;
+    if (speed > 0) await new Promise(r => setTimeout(r, speed));
+  }
+}
+
+async function runLiveDemo() {
+  const btn = document.getElementById('runBtn');
+  const status = document.getElementById('liveStatus');
+  const term = document.getElementById('liveTerm');
+
+  btn.disabled = true;
+  btn.classList.add('loading');
+  status.className = 'live-status pending';
+  status.textContent = 'Connecting to Docker container...';
+  term.textContent = '$ docker exec cy4-challenge node exploit-vault-demo.mjs\n\n';
+
+  // Pause auto-advance while demo runs
+  if (!paused) togglePause();
+
+  try {
+    const res = await fetch('/api/run-demo');
+    const data = await res.json();
+
+    if (!data.ok) throw new Error(data.error || 'Demo failed');
+
+    demoOutput = data.output;
+    status.className = 'live-status ok';
+    status.textContent = 'Demo complete — real SDK output below';
+
+    // Typewrite the Phase 1 (encryption) output into the live terminal
+    const phase1 = extractSection(demoOutput, '[PHASE 1]', '[PHASE 2]');
+    const header = extractSection(demoOutput, 'CY4SECURE EXPLOIT VAULT DEMO', '[PHASE 1]');
+    const fullPhase1 = header + '\n\n' + phase1;
+    await typewrite(term, '$ docker exec cy4-challenge node exploit-vault-demo.mjs\n\n' + colorize(fullPhase1), 8);
+
+    // Populate clerk vs outsider
+    const phase2 = extractSection(demoOutput, '[PHASE 2]', '[PHASE 3]');
+    const phase3 = extractSection(demoOutput, '[PHASE 3]', '[PHASE 4]');
+    document.getElementById('clerkTerm').innerHTML = colorize(phase2);
+    document.getElementById('outsiderTerm').innerHTML = colorize(phase3);
+    document.getElementById('compareCallout').style.display = '';
+
+    // Populate full log
+    document.getElementById('fullTerm').innerHTML = colorize(demoOutput);
+    const lines = demoOutput.split('\n').length;
+    const ciphers = (demoOutput.match(/CY41GH/g) || []).length;
+    const masked = (demoOutput.match(/\[masked\]/g) || []).length;
+    document.getElementById('fullTermFooter').innerHTML =
+      '<span style="color:var(--accent);">&#x25cf;</span> ' +
+      lines + ' lines | ' +
+      ciphers + ' ciphertext values | ' +
+      masked + ' access denials';
+
+    // Resume after a beat
+    setTimeout(() => {
+      if (paused) togglePause();
+    }, 3000);
+
+  } catch (e) {
+    status.className = 'live-status err';
+    status.textContent = 'Error: ' + e.message;
+    term.textContent += '\nERROR: ' + e.message + '\n\nMake sure Docker is running and the server is at localhost:3007';
+    btn.disabled = false;
+    btn.classList.remove('loading');
+  }
+}
+
 counter.textContent = '1 / ' + slides.length;
 resetTimer();
 </script>

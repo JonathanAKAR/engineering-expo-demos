@@ -1,4 +1,4 @@
-<title>EternalBlue Case Study</title>
+<title>Cy4Secure Technical Demo</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Noto+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
 :root {
@@ -13,7 +13,6 @@
   --threat: #ef4444;
   --threat-dim: rgba(239,68,68,0.12);
   --warn: #f59e0b;
-  --warn-dim: rgba(245,158,11,0.12);
   --cipher: #a78bfa;
   --cipher-dim: rgba(167,139,250,0.12);
   --border: #1f2235;
@@ -31,16 +30,10 @@
 }
 html { height: 100%; }
 body {
-  background: var(--bg);
-  color: var(--fg);
+  background: var(--bg); color: var(--fg);
   font-family: var(--font-body);
-  height: 100%;
-  overflow: hidden;
-  margin: 0;
-  padding: 0;
-  line-height: 1.6;
+  height: 100%; overflow: hidden; margin: 0; padding: 0; line-height: 1.6;
 }
-
 .slideshow { position: relative; width: 100%; height: 100%; }
 .slide {
   position: absolute; inset: 0;
@@ -51,67 +44,51 @@ body {
 }
 .slide.active { opacity: 1; pointer-events: auto; }
 .slide-inner {
-  width: 100%;
-  max-width: 880px;
+  width: 100%; max-width: 880px;
   padding-inline: max(24px, 5vw);
-  padding-block: 60px 80px;
+  padding-block: 48px 80px;
   box-sizing: border-box;
 }
-@media (prefers-reduced-motion: reduce) {
-  .slide { transition: none; }
-}
+.slide-inner.wide { max-width: 1080px; }
 
-h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; text-wrap: balance; margin: 0; }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; margin: 0; }
 h1 { font-size: clamp(2.2rem, 6vw, 3.5rem); font-weight: 800; letter-spacing: -0.025em; }
-h2 { font-size: clamp(1.4rem, 3.5vw, 2rem); font-weight: 700; letter-spacing: -0.015em; }
+h2 { font-size: clamp(1.3rem, 3.5vw, 1.85rem); font-weight: 700; letter-spacing: -0.015em; }
 h3 { font-size: 1rem; font-weight: 600; }
 p, li { margin: 0; }
 
 .slide-center { text-align: center; }
 .slide-center .slide-inner { margin: 0 auto; }
 .eyebrow {
-  font-family: var(--font-mono); font-size: 0.78rem; font-weight: 500;
+  font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
   color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
 .subtitle {
-  font-size: clamp(0.95rem, 2vw, 1.15rem);
-  color: var(--fg-muted); margin-top: 1.25rem; max-width: 560px; line-height: 1.7;
+  font-size: clamp(0.9rem, 2vw, 1.05rem);
+  color: var(--fg-muted); margin-top: 0.75rem; max-width: 600px; line-height: 1.65;
 }
 .slide-center .subtitle { margin-inline: auto; }
 .hl-accent { color: var(--accent); }
 .hl-threat { color: var(--threat); }
 .hl-cipher { color: var(--cipher); }
-.hl-warn { color: var(--warn); }
 
-.features { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 1.75rem; }
-.feat {
-  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-  padding: 1.15rem 1.25rem;
-}
-.feat-label {
-  font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600;
-  color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em;
-  margin-bottom: 0.4rem;
-}
-.feat p { font-size: 0.88rem; color: var(--fg-muted); line-height: 1.55; }
-
-.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1.25rem; margin-top: 2rem; }
+/* Stats */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
 .stat {
   text-align: center; background: var(--surface); border: 1px solid var(--border);
-  border-radius: 10px; padding: 1.25rem 0.75rem;
+  border-radius: 10px; padding: 1rem 0.75rem;
 }
 .stat-num {
-  font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.2rem);
   font-weight: 800; font-variant-numeric: tabular-nums;
 }
 .stat-num.threat { color: var(--threat); }
-.stat-num.accent { color: var(--accent); }
-.stat-label { font-size: 0.75rem; color: var(--fg-muted); margin-top: 0.3rem; }
 
-.impact-list { list-style: none; padding: 0; margin: 1.25rem 0 0; display: flex; flex-direction: column; gap: 0.6rem; }
+/* Impact list */
+.impact-list { list-style: none; padding: 0; margin: 1rem 0 0; display: flex; flex-direction: column; gap: 0.5rem; }
 .impact-list li {
-  font-size: 0.9rem; padding-left: 1.4rem; position: relative; color: var(--fg-muted);
+  font-size: 0.88rem; padding-left: 1.4rem; position: relative; color: var(--fg-muted);
 }
 .impact-list li::before {
   content: ''; position: absolute; left: 0; top: 0.55em;
@@ -120,129 +97,87 @@ p, li { margin: 0; }
 .impact-list.threat-dots li::before { background: var(--threat); }
 .impact-list.accent-dots li::before { background: var(--accent); }
 
-.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 1.75rem; }
-.compare-col {
-  background: var(--surface); border-radius: 10px; padding: 1.25rem;
-  border: 1px solid var(--border);
+/* Callout */
+.callout {
+  margin-top: 1.25rem; padding: 0.85rem 1.15rem;
+  border-left: 3px solid var(--accent); background: var(--accent-dim);
+  border-radius: 0 8px 8px 0;
+  font-size: 0.85rem; color: var(--fg); line-height: 1.6;
 }
-.compare-col.bad { border-color: rgba(239,68,68,0.3); }
-.compare-col.good { border-color: rgba(45,212,191,0.3); }
-.compare-label {
-  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600;
-  letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.75rem;
-}
-.compare-col.bad .compare-label { color: var(--threat); }
-.compare-col.good .compare-label { color: var(--accent); }
-.flow-step {
-  font-size: 0.85rem; padding: 0.4rem 0;
-  border-bottom: 1px solid var(--border); color: var(--fg-muted);
-}
-.flow-step:last-child { border-bottom: none; }
-.flow-step strong { color: var(--fg); }
+.callout.threat-callout { border-left-color: var(--threat); background: var(--threat-dim); }
 
+/* Terminal */
 .terminal {
   background: var(--code-bg); border-radius: 10px; overflow: hidden;
-  border: 1px solid var(--border); margin-top: 1.25rem;
+  border: 1px solid var(--border);
 }
 .term-bar {
-  padding: 10px 14px; display: flex; align-items: center; gap: 7px;
+  padding: 8px 14px; display: flex; align-items: center; gap: 7px;
   border-bottom: 1px solid rgba(255,255,255,0.06);
 }
-.term-dot { width: 10px; height: 10px; border-radius: 50%; }
+.term-dot { width: 9px; height: 9px; border-radius: 50%; }
 .term-dot.r { background: #ff5f57; }
 .term-dot.y { background: #febc2e; }
 .term-dot.g { background: #28c840; }
 .term-title {
-  font-family: var(--font-mono); font-size: 0.7rem; color: var(--cmt); margin-left: 6px;
+  font-family: var(--font-mono); font-size: 0.65rem; color: var(--cmt); margin-left: 4px;
 }
-.term-body {
-  padding: 16px 18px; overflow-x: auto;
-  max-height: 340px; overflow-y: auto;
-}
+.term-body { padding: 12px 14px; overflow-x: auto; }
 .term-body pre {
-  margin: 0; font-family: var(--font-mono); font-size: 0.72rem;
-  line-height: 1.6; color: var(--code-fg); white-space: pre-wrap;
-  word-break: break-all;
+  margin: 0; font-family: var(--font-mono); font-size: 0.68rem;
+  line-height: 1.55; color: var(--code-fg); white-space: pre-wrap; word-break: break-all;
 }
-.term-footer {
-  padding: 10px 18px;
-  border-top: 1px solid rgba(255,255,255,0.06);
-  font-family: var(--font-mono); font-size: 0.72rem; color: var(--cmt);
-}
+.term-body pre .cy4-cipher { color: var(--cipher); }
+.term-body pre .cy4-masked { color: var(--threat); font-weight: 600; }
+.term-body pre .cy4-clear { color: var(--green); }
+.term-body pre .cy4-label { color: var(--accent); }
+.term-body pre .cy4-header { color: var(--num); font-weight: 600; }
+.term-body pre .cy4-sep { color: var(--cmt); }
 
-.callout {
-  margin-top: 1.5rem; padding: 1rem 1.25rem;
-  border-left: 3px solid var(--accent); background: var(--accent-dim);
-  border-radius: 0 8px 8px 0;
-  font-size: 0.9rem; color: var(--fg); line-height: 1.6;
-}
-.callout.threat-callout { border-left-color: var(--threat); background: var(--threat-dim); }
+/* Code highlighting in static snippets */
+.code-kw { color: var(--kw); }
+.code-fn { color: var(--fn); }
+.code-str { color: var(--str); }
+.code-cmt { color: var(--cmt); }
+.code-num { color: var(--num); }
 
-.beyond { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
-.beyond-card {
+/* Phase grid: side-by-side code + output */
+.phase-grid {
+  display: grid; grid-template-columns: 42% 1fr; gap: 0.85rem; margin-top: 1rem;
+}
+.phase-grid .terminal { height: 100%; display: flex; flex-direction: column; }
+.phase-grid .term-body { flex: 1; max-height: 300px; overflow-y: auto; }
+.phase-tag {
+  font-family: var(--font-mono); font-size: 0.55rem; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 2px 6px; border-radius: 3px; margin-left: auto;
+}
+.phase-tag.script { background: var(--cipher-dim); color: var(--cipher); }
+.phase-tag.output { background: var(--accent-dim); color: var(--accent); }
+.phase-explain {
+  margin-top: 0.85rem; font-size: 0.82rem; color: var(--fg-muted); line-height: 1.6;
+}
+.phase-explain strong { color: var(--fg); }
+
+/* Features grid */
+.features { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.85rem; margin-top: 1.25rem; }
+.feat {
   background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-  padding: 1rem 1.15rem;
+  padding: 1rem 1.1rem;
 }
-.beyond-card h3 { font-size: 0.9rem; margin-bottom: 0.35rem; }
-.beyond-card p { font-size: 0.8rem; color: var(--fg-muted); line-height: 1.5; }
-.beyond-icon {
-  width: 32px; height: 32px; border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  margin-bottom: 0.6rem; font-size: 0.9rem;
-  background: var(--accent-dim); color: var(--accent);
-  font-family: var(--font-mono); font-weight: 700;
+.feat-label {
+  font-family: var(--font-mono); font-size: 0.68rem; font-weight: 600;
+  color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em;
+  margin-bottom: 0.3rem;
 }
+.feat p { font-size: 0.82rem; color: var(--fg-muted); line-height: 1.5; }
 
-.nav {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  display: flex; align-items: center; justify-content: center; gap: 12px;
-  padding: 14px 24px calc(14px + env(safe-area-inset-bottom, 0px));
-  z-index: 10;
-}
-.nav-btn {
-  width: 36px; height: 36px; border-radius: 50%;
-  background: var(--surface-raised); border: 1px solid var(--border);
-  color: var(--fg-muted); font-size: 1rem;
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-  transition: background 0.2s, color 0.2s;
-  flex-shrink: 0;
-}
-.nav-btn:hover { background: var(--surface); color: var(--fg); }
-.dots { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
-.dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--border); border: none; cursor: pointer;
-  transition: background 0.3s, transform 0.2s; padding: 0;
-}
-.dot.active { background: var(--accent); transform: scale(1.3); }
-.counter {
-  font-family: var(--font-mono); font-size: 0.7rem;
-  color: var(--fg-muted); min-width: 40px; text-align: right;
-  flex-shrink: 0;
-}
-
-.progress {
-  position: fixed; top: env(safe-area-inset-top, 0px); left: 0; right: 0;
-  height: 3px; z-index: 11; background: rgba(255,255,255,0.04);
-}
-.progress-fill { height: 100%; width: 0; background: var(--accent); }
-
-.pause-badge {
-  position: fixed; top: calc(12px + env(safe-area-inset-top, 0px)); right: 16px;
-  font-family: var(--font-mono); font-size: 0.65rem;
-  color: var(--fg-muted); background: var(--surface-raised);
-  padding: 4px 10px; border-radius: 4px; border: 1px solid var(--border);
-  opacity: 0; transition: opacity 0.3s; z-index: 11;
-  pointer-events: none;
-}
-.pause-badge.visible { opacity: 1; }
-
-/* ---- Live demo ---- */
+/* Run button */
 .run-btn {
   display: inline-flex; align-items: center; gap: 8px;
-  margin-top: 1rem; padding: 10px 20px;
+  margin-top: 0.75rem; padding: 9px 18px;
   background: var(--accent); color: var(--bg); border: none; border-radius: 8px;
-  font-family: var(--font-mono); font-size: 0.82rem; font-weight: 600;
+  font-family: var(--font-mono); font-size: 0.78rem; font-weight: 600;
   cursor: pointer; transition: opacity 0.2s;
 }
 .run-btn:hover { opacity: 0.85; }
@@ -256,325 +191,426 @@ p, li { margin: 0; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .live-status {
-  font-family: var(--font-mono); font-size: 0.7rem; margin-top: 0.5rem;
-  min-height: 1.2em;
+  font-family: var(--font-mono); font-size: 0.68rem; margin-top: 0.4rem; min-height: 1.2em;
 }
 .live-status.ok { color: var(--accent); }
 .live-status.err { color: var(--threat); }
 .live-status.pending { color: var(--warn); }
 
-.term-body pre .cy4-cipher { color: var(--cipher); }
-.term-body pre .cy4-masked { color: var(--threat); font-weight: 600; }
-.term-body pre .cy4-clear { color: var(--green); }
-.term-body pre .cy4-label { color: var(--accent); }
-.term-body pre .cy4-header { color: var(--num); font-weight: 600; }
-.term-body pre .cy4-sep { color: var(--cmt); }
+/* Nav */
+.nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 12px 24px calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 10;
+}
+.nav-btn {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--surface-raised); border: 1px solid var(--border);
+  color: var(--fg-muted); font-size: 1rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, color 0.2s; flex-shrink: 0;
+}
+.nav-btn:hover { background: var(--surface); color: var(--fg); }
+.dots { display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; }
+.dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--border); border: none; cursor: pointer;
+  transition: background 0.3s, transform 0.2s; padding: 0;
+}
+.dot.active { background: var(--accent); transform: scale(1.3); }
+.counter {
+  font-family: var(--font-mono); font-size: 0.65rem;
+  color: var(--fg-muted); min-width: 36px; text-align: right; flex-shrink: 0;
+}
+.progress {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 3px; z-index: 11; background: rgba(255,255,255,0.04);
+}
+.progress-fill { height: 100%; width: 0; background: var(--accent); }
+.pause-badge {
+  position: fixed; top: 12px; right: 16px;
+  font-family: var(--font-mono); font-size: 0.6rem;
+  color: var(--fg-muted); background: var(--surface-raised);
+  padding: 3px 8px; border-radius: 4px; border: 1px solid var(--border);
+  opacity: 0; transition: opacity 0.3s; z-index: 11; pointer-events: none;
+}
+.pause-badge.visible { opacity: 1; }
 
-@media (max-width: 640px) {
-  .compare { grid-template-columns: 1fr; }
+@media (max-width: 700px) {
+  .phase-grid { grid-template-columns: 1fr; }
+  .phase-grid .term-body { max-height: 200px; }
   .stats { grid-template-columns: repeat(2, 1fr); }
   .features { grid-template-columns: 1fr; }
-  .beyond { grid-template-columns: 1fr; }
-  .slide-inner { padding-block: 48px 72px; }
-  .term-body { max-height: 220px; }
+  .slide-inner { padding-block: 40px 72px; }
 }
 </style>
 
 <div class="slideshow" id="slideshow">
 
-  <!-- 1. TITLE -->
+  <!-- 0. TITLE -->
   <div class="slide slide-center active" data-dur="8000">
     <div class="slide-inner">
       <div class="eyebrow">Cy4Secure Technical Demo</div>
-      <h1>What If Stolen Weapons<br><span class="hl-accent">Couldn't Fire?</span></h1>
+      <h1>Steal the Database.<br><span class="hl-accent">Still Need the Keys.</span></h1>
       <p class="subtitle">
-        How field-level encryption and CSA-enforced access control
-        could have prevented the most devastating cyber attack in history.
+        Field-level encryption applied to the EternalBlue exploit arsenal.
+        A live demonstration of CSA-enforced access control using the Cy4Secure SDK.
       </p>
     </div>
   </div>
 
-  <!-- 2. WHAT IS CSA -->
-  <div class="slide" data-dur="12000">
-    <div class="slide-inner">
-      <div class="eyebrow">The Foundation</div>
-      <h2>The CSA &mdash; Your Data's Gatekeeper</h2>
-      <p class="subtitle" style="max-width:none">
-        Cy4Secure encrypts data at the individual field level. Every key request
-        is authorized by the CSA. Data carries its own protection.
-      </p>
-      <div class="features">
-        <div class="feat">
-          <div class="feat-label">FLE &mdash; Field-Level</div>
-          <p>Every value gets its own unique key. A leaked key opens exactly one field, not the whole row or table.</p>
-        </div>
-        <div class="feat">
-          <div class="feat-label">CLE &mdash; Column-Level</div>
-          <p>Deterministic encryption from a key pool. Same input produces same ciphertext &mdash; enables search and sort while encrypted.</p>
-        </div>
-        <div class="feat">
-          <div class="feat-label">Nomadic Ciphertext</div>
-          <p>Self-describing format (CY41GH...) carries its key reference. Protection moves with the data, wherever it goes.</p>
-        </div>
-        <div class="feat">
-          <div class="feat-label">CSA Authorization</div>
-          <p>Centralized key access control. Every key request is checked against grants, roles, and policies before release.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 3. THE GAP -->
-  <div class="slide slide-center" data-dur="10000">
-    <div class="slide-inner">
-      <div class="eyebrow">The Problem</div>
-      <h2 style="font-size:clamp(1.3rem,3vw,1.75rem); color:var(--fg-muted); font-weight:600; font-style:italic; max-width:600px; margin:0 auto;">
-        &ldquo;Your firewall stopped 10,000 attacks today.<br>
-        <span class="hl-threat">Attack 10,001 got through.</span><br>
-        Now what?&rdquo;
-      </h2>
-      <p class="subtitle">
-        Perimeter security stops intrusions. But once an attacker is inside &mdash;
-        or has insider access &mdash; the data sits in plaintext. Databases. File shares. Backups.
-        All readable.
-      </p>
-      <div class="callout threat-callout" style="max-width:520px; margin-inline:auto;">
-        Cy4Secure makes the data itself the last line of defense.
-        Even a complete database breach yields only ciphertext.
-      </div>
-    </div>
-  </div>
-
-  <!-- 4. ETERNALBLUE -->
-  <div class="slide" data-dur="12000">
+  <!-- 1. THE BREACH -->
+  <div class="slide" data-dur="14000">
     <div class="slide-inner">
       <div class="eyebrow">Case Study</div>
-      <h2>EternalBlue <span class="hl-threat">(MS17-010)</span></h2>
-      <p class="subtitle" style="max-width:none">The most dangerous cyber weapon ever leaked.</p>
-      <ul class="impact-list threat-dots" style="margin-top:1.5rem;">
-        <li>Developed by the <strong>NSA's Equation Group</strong> (Tailored Access Operations)</li>
-        <li>Exploits a critical flaw in <strong>Windows SMB v1</strong> protocol</li>
-        <li>Achieves <strong>remote code execution</strong> on any unpatched Windows machine &mdash; no authentication needed</li>
-        <li>Stored in a <strong>classified exploit database</strong> alongside dozens of other cyber weapons</li>
-        <li>One of many tools in what was essentially a <strong>digital armory</strong></li>
+      <h2>EternalBlue &mdash; The Breach That Changed Everything</h2>
+      <ul class="impact-list threat-dots" style="margin-top:1.25rem;">
+        <li>The NSA developed <strong>EternalBlue (MS17-010)</strong> &mdash; a remote code execution exploit targeting Windows SMB v1</li>
+        <li>Stored alongside dozens of other cyber weapons in a <strong>classified exploit database</strong> &mdash; as plaintext</li>
+        <li><strong>2016&ndash;2017:</strong> The Shadow Brokers stole and published the full exploit database</li>
+        <li>Every exploit was immediately readable and usable by anyone who downloaded the dump</li>
+        <li><strong>May 12, 2017:</strong> EternalBlue was weaponized into <span class="hl-threat">WannaCry ransomware</span></li>
       </ul>
       <div class="callout threat-callout">
-        The exploit was stored as plaintext in the NSA's internal systems.
-        When those systems were compromised, the exploit was immediately usable.
+        The exploit database was exfiltrated. The data was plaintext.
+        Every weapon was immediately usable.
       </div>
     </div>
   </div>
 
-  <!-- 5. SHADOW BROKERS -->
-  <div class="slide" data-dur="11000">
-    <div class="slide-inner">
-      <div class="eyebrow">The Breach</div>
-      <h2>The Shadow Brokers</h2>
-      <p class="subtitle" style="max-width:none; font-style:italic; color:var(--threat);">
-        &ldquo;Someone stole the armory.&rdquo;
-      </p>
-      <ul class="impact-list threat-dots" style="margin-top:1.5rem;">
-        <li><strong>2016:</strong> A group calling themselves the Shadow Brokers announces they have stolen the NSA's cyber arsenal</li>
-        <li><strong>August 2016:</strong> First samples released as proof &mdash; working exploits targeting firewalls and routers</li>
-        <li><strong>April 14, 2017:</strong> Full dump released publicly &mdash; EternalBlue, DoublePulsar, EternalRomance, and dozens more</li>
-        <li>The entire exploit database was <strong>exfiltrated and published</strong></li>
-      </ul>
-      <div class="callout threat-callout">
-        The database was stolen. Every exploit was readable.
-        Every weapon was immediately usable by anyone who downloaded the dump.
-      </div>
-    </div>
-  </div>
-
-  <!-- 6. WANNACRY -->
+  <!-- 2. WANNACRY -->
   <div class="slide slide-center" data-dur="14000">
     <div class="slide-inner">
       <div class="eyebrow" style="color:var(--threat);">The Fallout &mdash; May 12, 2017</div>
       <h2>WannaCry</h2>
-      <p class="subtitle">One stolen exploit. <span class="hl-threat">Global devastation.</span></p>
+      <p class="subtitle">One stolen exploit. <span class="hl-threat">Global impact.</span></p>
       <div class="stats">
-        <div class="stat"><div class="stat-num threat">230K+</div><div class="stat-label">Computers infected</div></div>
-        <div class="stat"><div class="stat-num threat">150</div><div class="stat-label">Countries affected</div></div>
-        <div class="stat"><div class="stat-num threat">$8B</div><div class="stat-label">Estimated damages</div></div>
-        <div class="stat"><div class="stat-num threat">1</div><div class="stat-label">Exploit that started it</div></div>
+        <div class="stat"><div class="stat-num threat">230K+</div><div class="stat-label" style="font-size:0.72rem; color:var(--fg-muted); margin-top:0.2rem;">Computers infected</div></div>
+        <div class="stat"><div class="stat-num threat">150</div><div class="stat-label" style="font-size:0.72rem; color:var(--fg-muted); margin-top:0.2rem;">Countries affected</div></div>
+        <div class="stat"><div class="stat-num threat">$8B</div><div class="stat-label" style="font-size:0.72rem; color:var(--fg-muted); margin-top:0.2rem;">Estimated damages</div></div>
+        <div class="stat"><div class="stat-num threat">1</div><div class="stat-label" style="font-size:0.72rem; color:var(--fg-muted); margin-top:0.2rem;">Exploit that started it</div></div>
       </div>
-      <ul class="impact-list threat-dots" style="margin-top:1.5rem;">
-        <li><strong>NHS hospitals:</strong> Surgeries cancelled, ambulances diverted, patient records inaccessible</li>
-        <li><strong>Maersk shipping:</strong> $300M in losses, 45,000 PCs and 4,000 servers rebuilt from scratch</li>
-        <li><strong>FedEx / TNT Express:</strong> $400M impact on operations</li>
-        <li>North Korean hackers <strong>weaponized a stolen American exploit</strong> in under a month</li>
+      <ul class="impact-list threat-dots" style="margin-top:1.25rem;">
+        <li><strong>NHS:</strong> Surgeries cancelled, ambulances diverted, patient records locked</li>
+        <li><strong>Maersk:</strong> $300M in losses, 45,000 PCs rebuilt from scratch</li>
+        <li><strong>FedEx:</strong> $400M operational impact</li>
       </ul>
     </div>
   </div>
 
-  <!-- 7. WHAT IF -->
-  <div class="slide" data-dur="14000">
-    <div class="slide-inner">
-      <div class="eyebrow">The Turning Point</div>
-      <h2>What If the Arsenal Was <span class="hl-accent">Protected?</span></h2>
-      <div class="compare">
-        <div class="compare-col bad">
-          <div class="compare-label">Without Cy4Secure</div>
-          <div class="flow-step"><strong>Database stolen</strong> by Shadow Brokers</div>
-          <div class="flow-step">Exploit code <strong style="color:var(--threat)">readable in plaintext</strong></div>
-          <div class="flow-step">Exploits <strong>weaponized within weeks</strong></div>
-          <div class="flow-step">WannaCry ransomware <strong>hits 150 countries</strong></div>
-          <div class="flow-step" style="color:var(--threat); font-weight:600;">$8 billion+ in global damage</div>
-        </div>
-        <div class="compare-col good">
-          <div class="compare-label">With Cy4Secure</div>
-          <div class="flow-step"><strong>Database stolen</strong> by Shadow Brokers</div>
-          <div class="flow-step">Every exploit field is <strong style="color:var(--cipher)">nomadic ciphertext</strong></div>
-          <div class="flow-step">Shadow Brokers request keys &mdash; <strong style="color:var(--accent)">CSA denies</strong></div>
-          <div class="flow-step">No keys &rarr; no readable exploits &rarr; <strong>no weapon</strong></div>
-          <div class="flow-step" style="color:var(--accent); font-weight:600;">Crisis averted. Data sealed.</div>
-        </div>
-      </div>
-      <div class="callout">
-        The vault was opened. But every weapon was locked in its own case.
-        Without a CSA grant, the keys stay wrapped.
-      </div>
-    </div>
-  </div>
-
-  <!-- 8. LIVE DEMO: RUN -->
-  <div class="slide slide-center" data-dur="120000" id="liveSlide">
-    <div class="slide-inner" style="max-width:940px;">
-      <div class="eyebrow">Live Technical Demo</div>
-      <h2>Encrypting the Arsenal <span class="hl-accent">Right Now</span></h2>
-      <p class="subtitle">Running the Cy4Secure SDK against 4 classified exploit records in a live Docker container.</p>
+  <!-- 3. PHASE 1: ENCRYPT -->
+  <div class="slide" data-dur="999999" id="phase1Slide">
+    <div class="slide-inner wide">
+      <div class="eyebrow">Phase 1 of 4</div>
+      <h2>Encrypting the Arsenal</h2>
+      <p class="subtitle" style="max-width:none">Each exploit record's sensitive fields are encrypted individually with unique AES-256 keys via FLE.</p>
       <button class="run-btn" id="runBtn" onclick="runLiveDemo()">
         <span class="spinner"></span>
         Run Exploit Vault Demo
       </button>
       <div class="live-status" id="liveStatus"></div>
-      <div class="terminal" style="margin-top:1rem; text-align:left;">
-        <div class="term-bar">
-          <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
-          <span class="term-title">docker exec cy4-challenge node exploit-vault-demo.mjs</span>
-        </div>
-        <div class="term-body" style="max-height:450px;" id="liveTermBody">
-          <pre id="liveTerm" style="min-height:60px;">Waiting to run...</pre>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 9. LIVE DEMO: CLERK vs OUTSIDER -->
-  <div class="slide" data-dur="18000" id="compareSlide">
-    <div class="slide-inner" style="max-width:940px;">
-      <div class="eyebrow">Live Results</div>
-      <h2>Authorized <span class="hl-accent">vs</span> Attacker</h2>
-      <p class="subtitle" style="max-width:none">Same ciphertext. Different roles. Different outcomes.</p>
-      <div class="compare" style="margin-top:1.25rem;">
-        <div class="compare-col good" style="padding:0; overflow:hidden;">
-          <div class="term-bar" style="border-bottom:1px solid rgba(45,212,191,0.2);">
+      <div class="phase-grid">
+        <div class="terminal">
+          <div class="term-bar">
             <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
-            <span class="term-title" style="color:var(--accent);">clerk (authorized analyst)</span>
+            <span class="term-title">exploit-vault-demo.mjs</span>
+            <span class="phase-tag script">SDK Script</span>
           </div>
-          <div class="term-body" style="max-height:300px;">
-            <pre id="clerkTerm" style="font-size:0.7rem;">Waiting for live demo...</pre>
+          <div class="term-body">
+            <pre><span class="code-cmt">// Generate unique key per record</span>
+<span class="code-kw">const</span> keyId = <span class="code-fn">newRecordKeyId</span>();
+
+<span class="code-cmt">// Encrypt each sensitive field with FLE</span>
+<span class="code-kw">const</span> enc = {
+  codename:  ex.codename,  <span class="code-cmt">// plaintext</span>
+  cve:       ex.cve,       <span class="code-cmt">// plaintext</span>
+
+  description:   <span class="code-kw">await</span> <span class="code-fn">encryptField</span>(
+    ex.description, keyId
+  ),
+  payload_notes: <span class="code-kw">await</span> <span class="code-fn">encryptField</span>(
+    ex.payload_notes, keyId
+  ),
+  analysis:      <span class="code-kw">await</span> <span class="code-fn">encryptField</span>(
+    ex.analysis, keyId
+  ),
+};
+
+<span class="code-cmt">// Output: CY41GHFLE&lt;keyId&gt;...</span>
+<span class="code-cmt">// Nomadic ciphertext that carries</span>
+<span class="code-cmt">// its own key reference</span></pre>
           </div>
         </div>
-        <div class="compare-col bad" style="padding:0; overflow:hidden;">
-          <div class="term-bar" style="border-bottom:1px solid rgba(239,68,68,0.2);">
+        <div class="terminal">
+          <div class="term-bar">
             <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
-            <span class="term-title" style="color:var(--threat);">outsider (Shadow Brokers)</span>
+            <span class="term-title">docker exec cy4-challenge</span>
+            <span class="phase-tag output">Live Output</span>
           </div>
-          <div class="term-body" style="max-height:300px;">
-            <pre id="outsiderTerm" style="font-size:0.7rem;">Waiting for live demo...</pre>
+          <div class="term-body" id="phase1TermBody">
+            <pre id="phase1Term">Waiting to run...</pre>
           </div>
         </div>
       </div>
-      <div class="callout" id="compareCallout" style="display:none;">
-        <strong>Live result:</strong> The clerk decrypted all fields. The outsider got <span class="hl-threat">[masked]</span> on every attempt.
-        Same database. Same ciphertext. The CSA decides who reads what.
+      <div class="phase-explain">
+        <strong>newRecordKeyId()</strong> generates a unique AES-256 key for each record.
+        <strong>encryptField()</strong> seals each field individually &mdash; the output is nomadic ciphertext
+        (<span class="hl-cipher">CY41GHFLE...</span>) that carries its own key reference.
+        Metadata like codenames and CVEs stays in plaintext for searchability.
       </div>
     </div>
   </div>
 
-  <!-- 10. LIVE DEMO: FULL LOG -->
-  <div class="slide" data-dur="16000">
-    <div class="slide-inner" style="max-width:940px;">
-      <div class="eyebrow" style="color:var(--cipher);">Complete SDK Output</div>
-      <h2>Full Terminal Log</h2>
-      <p class="subtitle" style="max-width:none">The complete output from the Cy4Secure SDK &mdash; every encrypt, decrypt, grant, and denial.</p>
-      <div class="terminal" style="margin-top:1rem;">
-        <div class="term-bar">
-          <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
-          <span class="term-title">exploit-vault-demo.mjs &mdash; full output</span>
+  <!-- 4. PHASE 2: CLERK -->
+  <div class="slide" data-dur="999999" id="phase2Slide">
+    <div class="slide-inner wide">
+      <div class="eyebrow">Phase 2 of 4</div>
+      <h2>Authorized Analyst Reads</h2>
+      <p class="subtitle" style="max-width:none">The <span class="hl-accent">clerk</span> role requests decryption. The CSA checks its grant table and releases the key.</p>
+      <div class="phase-grid">
+        <div class="terminal">
+          <div class="term-bar">
+            <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
+            <span class="term-title">exploit-vault-demo.mjs</span>
+            <span class="phase-tag script">SDK Script</span>
+          </div>
+          <div class="term-body">
+            <pre><span class="code-kw">const</span> eb = encrypted[<span class="code-num">0</span>]; <span class="code-cmt">// EternalBlue</span>
+
+<span class="code-cmt">// Request decryption as "clerk" role</span>
+<span class="code-kw">const</span> desc = <span class="code-kw">await</span> <span class="code-fn">decryptField</span>(
+  eb.description,
+  <span class="code-str">"clerk"</span>,       <span class="code-cmt">// role</span>
+  <span class="code-str">"description"</span>  <span class="code-cmt">// column</span>
+);
+<span class="code-kw">const</span> payload = <span class="code-kw">await</span> <span class="code-fn">decryptField</span>(
+  eb.payload_notes,
+  <span class="code-str">"clerk"</span>,
+  <span class="code-str">"payload_notes"</span>
+);
+<span class="code-kw">const</span> analysis = <span class="code-kw">await</span> <span class="code-fn">decryptField</span>(
+  eb.analysis,
+  <span class="code-str">"clerk"</span>,
+  <span class="code-str">"analysis"</span>
+);
+
+<span class="code-cmt">// CSA checks: does clerk have a grant?</span>
+<span class="code-cmt">// &rarr; Grant exists &rarr; key released</span>
+<span class="code-cmt">// &rarr; Field decrypts to plaintext</span></pre>
+          </div>
         </div>
-        <div class="term-body" style="max-height:400px;">
-          <pre id="fullTerm" style="font-size:0.68rem;">Waiting for live demo...</pre>
+        <div class="terminal">
+          <div class="term-bar">
+            <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
+            <span class="term-title">docker exec cy4-challenge &mdash; Phase 2</span>
+            <span class="phase-tag output">Live Output</span>
+          </div>
+          <div class="term-body" id="phase2TermBody">
+            <pre id="phase2Term" style="min-height:40px;">Waiting for Phase 1...</pre>
+          </div>
         </div>
-        <div class="term-footer" id="fullTermFooter">
-          Run the demo on slide 8 to populate this view.
-        </div>
+      </div>
+      <div class="phase-explain">
+        <strong>decryptField(ciphertext, "clerk", column)</strong> sends a key request to the CSA.
+        The CSA checks its grant table &mdash; the clerk role has authorized access, so the key is released
+        and the field decrypts to plaintext. The analyst sees the full exploit description, payload notes, and analysis.
       </div>
     </div>
   </div>
 
-  <!-- 11. BEYOND -->
+  <!-- 5. PHASE 3: OUTSIDER -->
+  <div class="slide" data-dur="999999" id="phase3Slide">
+    <div class="slide-inner wide">
+      <div class="eyebrow">Phase 3 of 4</div>
+      <h2>Attacker Attempts Access</h2>
+      <p class="subtitle" style="max-width:none">The <span class="hl-threat">outsider</span> role &mdash; representing the Shadow Brokers &mdash; calls the same API. The CSA denies every request.</p>
+      <div class="phase-grid">
+        <div class="terminal">
+          <div class="term-bar">
+            <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
+            <span class="term-title">exploit-vault-demo.mjs</span>
+            <span class="phase-tag script">SDK Script</span>
+          </div>
+          <div class="term-body">
+            <pre><span class="code-cmt">// Same decryptField() call</span>
+<span class="code-cmt">// Different role &mdash; no CSA grant</span>
+<span class="code-kw">for</span> (<span class="code-kw">const</span> rec <span class="code-kw">of</span> encrypted) {
+  <span class="code-kw">const</span> desc = <span class="code-kw">await</span> <span class="code-fn">decryptField</span>(
+    rec.description,
+    <span class="code-str">"outsider"</span>,    <span class="code-cmt">// no grant</span>
+    <span class="code-str">"description"</span>
+  );
+  <span class="code-kw">const</span> payload = <span class="code-kw">await</span> <span class="code-fn">decryptField</span>(
+    rec.payload_notes,
+    <span class="code-str">"outsider"</span>,
+    <span class="code-str">"payload_notes"</span>
+  );
+  <span class="code-kw">const</span> analysis = <span class="code-kw">await</span> <span class="code-fn">decryptField</span>(
+    rec.analysis,
+    <span class="code-str">"outsider"</span>,
+    <span class="code-str">"analysis"</span>
+  );
+}
+
+<span class="code-cmt">// CSA checks: does outsider have a grant?</span>
+<span class="code-cmt">// &rarr; No grant &rarr; key denied</span>
+<span class="code-cmt">// &rarr; Returns [masked]</span></pre>
+          </div>
+        </div>
+        <div class="terminal">
+          <div class="term-bar">
+            <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
+            <span class="term-title">docker exec cy4-challenge &mdash; Phase 3</span>
+            <span class="phase-tag output">Live Output</span>
+          </div>
+          <div class="term-body" id="phase3TermBody">
+            <pre id="phase3Term" style="min-height:40px;">Waiting for Phase 2...</pre>
+          </div>
+        </div>
+      </div>
+      <div class="phase-explain">
+        The exact same <strong>decryptField()</strong> call, but with the <span class="hl-threat">"outsider"</span> role.
+        The CSA has no grant for this role &mdash; the key request is denied and every field returns
+        <span class="hl-threat">[masked]</span>. Four exploits stolen, twelve encrypted fields, zero readable values.
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. PHASE 4: AUDITOR -->
+  <div class="slide" data-dur="999999" id="phase4Slide">
+    <div class="slide-inner wide">
+      <div class="eyebrow">Phase 4 of 4</div>
+      <h2>Audit Trail</h2>
+      <p class="subtitle" style="max-width:none">The <span class="hl-cipher">auditor</span> role demonstrates scoped access. Every key request is logged by the CSA.</p>
+      <div class="phase-grid">
+        <div class="terminal">
+          <div class="term-bar">
+            <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
+            <span class="term-title">exploit-vault-demo.mjs</span>
+            <span class="phase-tag script">SDK Script</span>
+          </div>
+          <div class="term-body">
+            <pre><span class="code-cmt">// Auditor with scoped access</span>
+<span class="code-kw">const</span> auditorDesc = <span class="code-kw">await</span> <span class="code-fn">decryptField</span>(
+  eb.description,
+  <span class="code-str">"auditor"</span>,
+  <span class="code-str">"description"</span>
+);
+
+<span class="code-cmt">// CSA logs every request:</span>
+<span class="code-cmt">//   who    &rarr; auditor</span>
+<span class="code-cmt">//   key    &rarr; eb.description keyId</span>
+<span class="code-cmt">//   when   &rarr; timestamp</span>
+<span class="code-cmt">//   result &rarr; granted | denied</span>
+
+<span class="code-cmt">// Auditor access depends entirely</span>
+<span class="code-cmt">// on what the CSA grants for</span>
+<span class="code-cmt">// this role + this key</span></pre>
+          </div>
+        </div>
+        <div class="terminal">
+          <div class="term-bar">
+            <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
+            <span class="term-title">docker exec cy4-challenge &mdash; Phase 4</span>
+            <span class="phase-tag output">Live Output</span>
+          </div>
+          <div class="term-body" id="phase4TermBody">
+            <pre id="phase4Term" style="min-height:40px;">Waiting for Phase 3...</pre>
+          </div>
+        </div>
+      </div>
+      <div class="phase-explain">
+        Every key request is logged by the CSA &mdash; who requested it, which key, when, and whether it was granted or denied.
+        The <strong>auditor</strong> role demonstrates scoped access: what this role can read depends entirely on what the CSA grants.
+        Unauthorized attempts are recorded and attributable.
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. TECHNICAL SUMMARY -->
   <div class="slide" data-dur="14000">
     <div class="slide-inner">
-      <div class="eyebrow">Broader Impact</div>
-      <h2>Beyond EternalBlue</h2>
-      <p class="subtitle" style="max-width:none">
-        The same field-level protection applies to every stolen database scenario &mdash;
-        including threats that don't exist yet.
-      </p>
-      <div class="beyond">
-        <div class="beyond-card">
-          <div class="beyond-icon">PQ</div>
-          <h3>Post-Quantum Ready</h3>
-          <p>AES-256 field encryption resists quantum attacks. Even harvest-now-decrypt-later strategies yield only sealed ciphertext.</p>
+      <div class="eyebrow">Results</div>
+      <h2>What the CSA Enforced</h2>
+      <div class="features" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+        <div class="feat">
+          <div class="feat-label">Encrypted</div>
+          <p>4 exploit records, 3 sensitive fields each &mdash; 12 individually keyed values</p>
         </div>
-        <div class="beyond-card">
-          <div class="beyond-icon" style="background:var(--threat-dim); color:var(--threat);">IN</div>
-          <h3>Insider Threats</h3>
-          <p>Even authorized users are scoped by CSA grants. An insider can't bulk-export what they aren't granted access to field-by-field.</p>
+        <div class="feat">
+          <div class="feat-label">Clerk (Authorized)</div>
+          <p>Full plaintext access. CSA verified the grant and released the key.</p>
         </div>
-        <div class="beyond-card">
-          <div class="beyond-icon" style="background:var(--warn-dim); color:var(--warn);">SC</div>
-          <h3>Supply Chain</h3>
-          <p>A compromised vendor stores ciphertext. Even with database access, they can't read what the CSA doesn't grant them.</p>
+        <div class="feat" style="border-color:rgba(239,68,68,0.25);">
+          <div class="feat-label" style="color:var(--threat);">Outsider (Attacker)</div>
+          <p>[masked] on every field. No grant &rarr; no key &rarr; no data.</p>
         </div>
-        <div class="beyond-card">
-          <div class="beyond-icon" style="background:var(--cipher-dim); color:var(--cipher);">ZD</div>
-          <h3>Zero-Day Stockpiles</h3>
-          <p>Government exploit databases, vulnerability research, classified tooling &mdash; stolen copies are useless without CSA keys.</p>
+        <div class="feat" style="border-color:rgba(167,139,250,0.25);">
+          <div class="feat-label" style="color:var(--cipher);">Auditor</div>
+          <p>Scoped access. Visibility determined by CSA grant configuration.</p>
         </div>
       </div>
       <div class="callout" style="margin-top:1.25rem;">
-        <strong>Historical precedent:</strong> OPM (21.5M records, 2015), Equifax (147M records, 2017),
-        SolarWinds (2020) &mdash; in each case, the stolen data was readable in plaintext.
-        With Cy4Secure, it wouldn't have been.
+        <strong>Same ciphertext, same database, same API.</strong>
+        The only variable is who the CSA trusts. No grant means no key &mdash; the data stays sealed.
       </div>
     </div>
   </div>
 
-  <!-- 12. CLOSING -->
-  <div class="slide slide-center" data-dur="8000">
+  <!-- 8. ENCRYPTION STRENGTH -->
+  <div class="slide" data-dur="14000">
+    <div class="slide-inner">
+      <div class="eyebrow">Against Emerging Threats</div>
+      <h2>Encryption That Outlasts the Attack</h2>
+      <p class="subtitle" style="max-width:none">FLE uses AES-256 per field. The encryption is designed to remain resilient against both current and emerging threats.</p>
+      <div class="features" style="margin-top:1.25rem;">
+        <div class="feat">
+          <div class="feat-label">Unique Key Per Field</div>
+          <p>Compromising one key reveals one field value &mdash; not the record, not the table, not the database.</p>
+        </div>
+        <div class="feat">
+          <div class="feat-label">Post-Quantum Resilient</div>
+          <p>AES-256 maintains 128-bit security against Grover's algorithm. Quantum computing does not break the field encryption.</p>
+        </div>
+        <div class="feat">
+          <div class="feat-label">Harvest-Now, Decrypt-Later</div>
+          <p>Intercepted ciphertext remains sealed. Future quantum capability does not retroactively expose AES-256 protected fields.</p>
+        </div>
+        <div class="feat">
+          <div class="feat-label">Nomadic Ciphertext</div>
+          <p>Protection travels with the data. Copied, exported, or backed up &mdash; the ciphertext stays sealed wherever it goes.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9. CLOSING -->
+  <div class="slide slide-center" data-dur="10000">
     <div class="slide-inner">
       <div class="eyebrow">Cy4Secure</div>
-      <h1>Steal the Database.<br><span class="hl-accent">Still Need the Keys.</span></h1>
-      <p class="subtitle">
-        Field-level encryption. CSA-enforced access control.<br>
-        Protection that moves with the data.
+      <h1 style="font-size:clamp(1.8rem,5vw,2.8rem);">Encrypted Once.<br><span class="hl-accent">Sealed Until Trusted.</span></h1>
+      <p class="subtitle" style="margin-top:1rem;">
+        Every field value gets its own unique encryption key.
+        The CSA is the sole authority over key access.
+        No key is released without an explicit grant.
       </p>
-      <div class="features" style="max-width:640px; margin:2rem auto 0;">
+      <div class="features" style="max-width:640px; margin:1.5rem auto 0; grid-template-columns: repeat(3, 1fr);">
         <div class="feat" style="text-align:center;">
           <div class="feat-label">Encrypt</div>
           <p>Each field, its own key</p>
         </div>
         <div class="feat" style="text-align:center;">
-          <div class="feat-label">Control</div>
-          <p>CSA authorizes every request</p>
+          <div class="feat-label">Enforce</div>
+          <p>CSA verifies every request</p>
         </div>
         <div class="feat" style="text-align:center;">
-          <div class="feat-label">Protect</div>
-          <p>Data sealed wherever it goes</p>
+          <div class="feat-label">Seal</div>
+          <p>No trust, no key, no data</p>
         </div>
+      </div>
+      <div class="callout" style="max-width:560px; margin:1.25rem auto 0; text-align:left;">
+        A stolen database is ciphertext. A copied file is ciphertext. A compromised backup is ciphertext.
+        The only path to plaintext is through the CSA &mdash; and the CSA opens only for those you explicitly trust.
       </div>
     </div>
   </div>
@@ -582,10 +618,10 @@ p, li { margin: 0; }
 </div>
 
 <!-- Navigation -->
-<nav class="nav" aria-label="Slide navigation">
-  <button class="nav-btn" id="prevBtn" aria-label="Previous slide">&#x2039;</button>
+<nav class="nav">
+  <button class="nav-btn" id="prevBtn" aria-label="Previous">&#x2039;</button>
   <div class="dots" id="dots"></div>
-  <button class="nav-btn" id="nextBtn" aria-label="Next slide">&#x203a;</button>
+  <button class="nav-btn" id="nextBtn" aria-label="Next">&#x203a;</button>
   <div class="counter" id="counter"></div>
 </nav>
 <div class="progress" id="progress"><div class="progress-fill" id="progressFill"></div></div>
@@ -599,38 +635,43 @@ const fill = document.getElementById('progressFill');
 const badge = document.getElementById('pauseBadge');
 let cur = 0, timer = null, paused = false;
 
+const PHASE_SLIDES = { 1: 3, 2: 4, 3: 5, 4: 6 };
+const SUMMARY_SLIDE = 7;
+
 slides.forEach((_, i) => {
   const d = document.createElement('button');
   d.className = 'dot' + (i === 0 ? ' active' : '');
-  d.setAttribute('aria-label', 'Go to slide ' + (i + 1));
   d.addEventListener('click', () => go(i));
   dotsEl.appendChild(d);
 });
 
 function dur() { return parseInt(slides[cur].dataset.dur) || 10000; }
 
-function go(n) {
+function go(n, isAuto) {
+  if (!isAuto && autoAdvancing) autoAdvancing = false;
   slides[cur].classList.remove('active');
   dotsEl.children[cur].classList.remove('active');
   cur = ((n % slides.length) + slides.length) % slides.length;
   slides[cur].classList.add('active');
   dotsEl.children[cur].classList.add('active');
-  counter.textContent = (cur + 1) + ' / ' + slides.length;
+  counter.textContent = (cur + 1) + '/' + slides.length;
   resetTimer();
+  onSlideEnter(cur);
 }
 
 function resetTimer() {
   clearTimeout(timer);
   fill.style.transition = 'none';
   fill.style.width = '0%';
-  if (!paused) {
+  const d = dur();
+  if (!paused && d < 900000) {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        fill.style.transition = 'width ' + dur() + 'ms linear';
+        fill.style.transition = 'width ' + d + 'ms linear';
         fill.style.width = '100%';
       });
     });
-    timer = setTimeout(() => go(cur + 1), dur());
+    timer = setTimeout(() => go(cur + 1), d);
   }
 }
 
@@ -656,10 +697,15 @@ document.addEventListener('keydown', e => {
   else if (e.key === ' ') { e.preventDefault(); togglePause(); }
 });
 
-// ---- Live demo (SSE streaming) ---- //
+/* ---- Live demo engine ---- */
 
-let demoOutput = '';
-let currentPhase = 0;
+let phaseData = {};
+let demoRan = false;
+let demoRunning = false;
+let phaseTyped = {};
+let autoAdvancing = false;
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 function colorizeLine(raw) {
   return raw
@@ -673,109 +719,136 @@ function colorizeLine(raw) {
     .replace(/(CSA granted.*|CSA DENIED.*)/g, '<span class="cy4-label">$1</span>');
 }
 
-const PHASE_LABELS = {
-  1: 'Phase 1 — Encrypting exploit records...',
-  2: 'Phase 2 — Authorized analyst (clerk) reading...',
-  3: 'Phase 3 — Attacker (outsider) attempting access...',
-  4: 'Phase 4 — Auditor reviewing access logs...',
-  summary: 'Generating summary...',
-};
-
-function extractSection(text, startMarker, endMarker) {
-  const start = text.indexOf(startMarker);
-  if (start === -1) return '';
-  const end = endMarker ? text.indexOf(endMarker, start + startMarker.length) : text.length;
-  return text.slice(start, end === -1 ? undefined : end).trim();
-}
-
 function runLiveDemo() {
+  if (demoRunning) return;
+  demoRunning = true;
+
   const btn = document.getElementById('runBtn');
   const status = document.getElementById('liveStatus');
-  const term = document.getElementById('liveTerm');
-  const termBody = document.getElementById('liveTermBody');
+  const term = document.getElementById('phase1Term');
+  const body = document.getElementById('phase1TermBody');
 
   btn.disabled = true;
   btn.classList.add('loading');
   status.className = 'live-status pending';
   status.textContent = 'Connecting to Docker container...';
-  term.innerHTML = '<span class="cy4-label">$</span> docker exec cy4-challenge node exploit-vault-demo.mjs\n\n';
-  demoOutput = '';
-  currentPhase = 0;
+  term.innerHTML = '';
+  phaseData = {};
+  phaseTyped = { 1: true };
 
   if (!paused) togglePause();
 
   const es = new EventSource('/api/run-demo-stream');
-  let lineCount = 0;
+  let activePhase = 0;
 
   es.addEventListener('line', (e) => {
     const { text, phase } = JSON.parse(e.data);
-    lineCount++;
-    demoOutput += text + '\n';
+    if (phase !== null) activePhase = phase;
 
-    if (phase !== null) {
-      currentPhase = phase;
-      const label = PHASE_LABELS[phase] || '';
-      if (label) {
-        status.className = 'live-status pending';
-        status.textContent = label;
-      }
+    const bucket = activePhase || 1;
+    if (!phaseData[bucket]) phaseData[bucket] = [];
+    phaseData[bucket].push(text);
+
+    if (bucket === 1 || activePhase === 0) {
+      term.innerHTML += colorizeLine(text) + '\n';
+      body.scrollTop = body.scrollHeight;
     }
 
-    term.innerHTML += colorizeLine(text) + '\n';
-    termBody.scrollTop = termBody.scrollHeight;
-  });
-
-  es.addEventListener('error', (e) => {
-    try {
-      const { message } = JSON.parse(e.data);
-      status.className = 'live-status err';
-      status.textContent = 'Error: ' + message;
-      term.innerHTML += '\n<span class="cy4-masked">ERROR: ' + message + '</span>\n';
-    } catch {
-      status.className = 'live-status err';
-      status.textContent = 'Connection lost';
+    if (phase === 1) {
+      status.className = 'live-status pending';
+      status.textContent = 'Phase 1 — Encrypting exploit records...';
+    } else if (phase === 2) {
+      status.className = 'live-status pending';
+      status.textContent = 'Phase 2 — Authorized read (buffering)...';
+    } else if (phase === 3) {
+      status.className = 'live-status pending';
+      status.textContent = 'Phase 3 — Attacker access (buffering)...';
+    } else if (phase === 4) {
+      status.className = 'live-status pending';
+      status.textContent = 'Phase 4 — Auditor review (buffering)...';
     }
-    es.close();
-    btn.disabled = false;
-    btn.classList.remove('loading');
   });
 
   es.addEventListener('done', (e) => {
     es.close();
-    const { totalLines } = JSON.parse(e.data);
-
-    status.className = 'live-status ok';
-    status.textContent = 'Demo complete — ' + totalLines + ' lines of live SDK output';
+    demoRan = true;
+    demoRunning = false;
     btn.classList.remove('loading');
 
-    const phase2 = extractSection(demoOutput, '[PHASE 2]', '[PHASE 3]');
-    const phase3 = extractSection(demoOutput, '[PHASE 3]', '[PHASE 4]');
-    document.getElementById('clerkTerm').innerHTML = phase2.split('\n').map(l => colorizeLine(l)).join('\n');
-    document.getElementById('outsiderTerm').innerHTML = phase3.split('\n').map(l => colorizeLine(l)).join('\n');
-    document.getElementById('compareCallout').style.display = '';
+    const { totalLines } = JSON.parse(e.data);
+    status.className = 'live-status ok';
+    status.textContent = 'Phase 1 complete — ' + (phaseData[1] || []).length + ' lines. Advancing...';
 
-    document.getElementById('fullTerm').innerHTML = demoOutput.split('\n').map(l => colorizeLine(l)).join('\n');
-    const ciphers = (demoOutput.match(/CY41GH/g) || []).length;
-    const masked = (demoOutput.match(/\[masked\]/g) || []).length;
-    document.getElementById('fullTermFooter').innerHTML =
-      '<span style="color:var(--accent);">&#x25cf;</span> ' +
-      totalLines + ' lines | ' +
-      ciphers + ' ciphertext values | ' +
-      masked + ' access denials';
+    setTimeout(() => startPhaseChain(2), 3000);
+  });
 
-    setTimeout(() => { if (paused) togglePause(); }, 4000);
+  es.addEventListener('error', () => {
+    status.className = 'live-status err';
+    status.textContent = 'Connection failed — is server.mjs running on port 3007?';
+    es.close();
+    btn.disabled = false;
+    btn.classList.remove('loading');
+    demoRunning = false;
   });
 
   es.onerror = () => {
     if (es.readyState === EventSource.CLOSED) return;
     status.className = 'live-status err';
-    status.textContent = 'Connection failed — is the server running at localhost:3007?';
+    status.textContent = 'Connection lost';
     es.close();
     btn.disabled = false;
     btn.classList.remove('loading');
+    demoRunning = false;
   };
 }
 
-counter.textContent = '1 / ' + slides.length;
+async function startPhaseChain(startPhase) {
+  autoAdvancing = true;
+  for (let p = startPhase; p <= 4; p++) {
+    if (!autoAdvancing) return;
+    go(PHASE_SLIDES[p], true);
+    await typewritePhase(p);
+    if (!autoAdvancing) return;
+    await sleep(3000);
+  }
+  if (autoAdvancing) {
+    autoAdvancing = false;
+    go(SUMMARY_SLIDE, true);
+    setTimeout(() => { if (paused) togglePause(); }, 2000);
+  }
+}
+
+async function typewritePhase(phaseNum) {
+  if (phaseTyped[phaseNum]) return;
+  phaseTyped[phaseNum] = true;
+
+  const term = document.getElementById('phase' + phaseNum + 'Term');
+  const body = document.getElementById('phase' + phaseNum + 'TermBody');
+  const lines = phaseData[phaseNum] || [];
+
+  term.innerHTML = '';
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    term.innerHTML += colorizeLine(line) + '\n';
+    body.scrollTop = body.scrollHeight;
+    const isBlank = line.trim() === '';
+    const isSep = /^[= ]+$/.test(line.trim());
+    await sleep(isBlank || isSep ? 35 : 80);
+  }
+}
+
+function onSlideEnter(slideIndex) {
+  for (const [phase, slide] of Object.entries(PHASE_SLIDES)) {
+    if (slide === slideIndex) {
+      const p = parseInt(phase);
+      if (demoRan && phaseData[p] && !phaseTyped[p]) {
+        typewritePhase(p);
+      }
+    }
+  }
+}
+
+counter.textContent = '1/' + slides.length;
 resetTimer();
 </script>

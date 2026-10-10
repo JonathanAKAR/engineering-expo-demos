@@ -12,7 +12,7 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-CONTAINER="adam-savage-red-team-challenge-node-labs-1"
+CONTAINER="cy4-challenge"
 
 echo "=================================================="
 echo "  Cy4Secure Exploit Vault Demo Runner"
@@ -21,14 +21,14 @@ echo ""
 
 # Copy script into the container
 echo "[1/2] Copying demo script into labs container..."
-sudo docker cp "$SCRIPT_DIR/exploit-vault-demo.mjs" "$CONTAINER:/challenge/labs/attack/"
+docker cp "$SCRIPT_DIR/exploit-vault-demo.mjs" "$CONTAINER:/challenge/labs/attack/"
 echo "  Done."
 
 # Run the exploit vault demo
 echo ""
 echo "[2/2] Running exploit-vault-demo.mjs..."
 echo ""
-sudo docker exec "$CONTAINER" \
+docker exec "$CONTAINER" \
   node /challenge/labs/attack/exploit-vault-demo.mjs \
   2>&1 | tee "$SCRIPT_DIR/exploit-vault-output.txt"
 

@@ -839,6 +839,7 @@ async function typewritePhase(phaseNum) {
 }
 
 function onSlideEnter(slideIndex) {
+  if (autoAdvancing) return;
   for (const [phase, slide] of Object.entries(PHASE_SLIDES)) {
     if (slide === slideIndex) {
       const p = parseInt(phase);

@@ -438,7 +438,7 @@ p, li { margin: 0; }
   </div>
 
   <!-- 8. LIVE DEMO: RUN -->
-  <div class="slide slide-center" data-dur="30000" id="liveSlide">
+  <div class="slide slide-center" data-dur="120000" id="liveSlide">
     <div class="slide-inner" style="max-width:940px;">
       <div class="eyebrow">Live Technical Demo</div>
       <h2>Encrypting the Arsenal <span class="hl-accent">Right Now</span></h2>
@@ -453,7 +453,7 @@ p, li { margin: 0; }
           <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
           <span class="term-title">docker exec cy4-challenge node exploit-vault-demo.mjs</span>
         </div>
-        <div class="term-body" style="max-height:360px;" id="liveTermBody">
+        <div class="term-body" style="max-height:450px;" id="liveTermBody">
           <pre id="liveTerm" style="min-height:60px;">Waiting to run...</pre>
         </div>
       </div>
@@ -656,12 +656,13 @@ document.addEventListener('keydown', e => {
   else if (e.key === ' ') { e.preventDefault(); togglePause(); }
 });
 
-// ---- Live demo ---- //
+// ---- Live demo (SSE streaming) ---- //
 
-let demoOutput = null;
+let demoOutput = '';
+let currentPhase = 0;
 
-function colorize(text) {
-  return text
+function colorizeLine(raw) {
+  return raw
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
     .replace(/(CY41GH\w{3}[0-9a-f-]+[^\s]*)/g, '<span class="cy4-cipher">$1</span>')
     .replace(/(\[masked\])/g, '<span class="cy4-masked">$1</span>')
@@ -672,6 +673,14 @@ function colorize(text) {
     .replace(/(CSA granted.*|CSA DENIED.*)/g, '<span class="cy4-label">$1</span>');
 }
 
+const PHASE_LABELS = {
+  1: 'Phase 1 — Encrypting exploit records...',
+  2: 'Phase 2 — Authorized analyst (clerk) reading...',
+  3: 'Phase 3 — Attacker (outsider) attempting access...',
+  4: 'Phase 4 — Auditor reviewing access logs...',
+  summary: 'Generating summary...',
+};
+
 function extractSection(text, startMarker, endMarker) {
   const start = text.indexOf(startMarker);
   if (start === -1) return '';
@@ -679,76 +688,92 @@ function extractSection(text, startMarker, endMarker) {
   return text.slice(start, end === -1 ? undefined : end).trim();
 }
 
-async function typewrite(el, html, speed) {
-  const lines = html.split('\n');
-  el.innerHTML = '';
-  for (let i = 0; i < lines.length; i++) {
-    el.innerHTML += (i > 0 ? '\n' : '') + lines[i];
-    el.scrollTop = el.scrollHeight;
-    if (speed > 0) await new Promise(r => setTimeout(r, speed));
-  }
-}
-
-async function runLiveDemo() {
+function runLiveDemo() {
   const btn = document.getElementById('runBtn');
   const status = document.getElementById('liveStatus');
   const term = document.getElementById('liveTerm');
+  const termBody = document.getElementById('liveTermBody');
 
   btn.disabled = true;
   btn.classList.add('loading');
   status.className = 'live-status pending';
   status.textContent = 'Connecting to Docker container...';
-  term.textContent = '$ docker exec cy4-challenge node exploit-vault-demo.mjs\n\n';
+  term.innerHTML = '<span class="cy4-label">$</span> docker exec cy4-challenge node exploit-vault-demo.mjs\n\n';
+  demoOutput = '';
+  currentPhase = 0;
 
-  // Pause auto-advance while demo runs
   if (!paused) togglePause();
 
-  try {
-    const res = await fetch('/api/run-demo');
-    const data = await res.json();
+  const es = new EventSource('/api/run-demo-stream');
+  let lineCount = 0;
 
-    if (!data.ok) throw new Error(data.error || 'Demo failed');
+  es.addEventListener('line', (e) => {
+    const { text, phase } = JSON.parse(e.data);
+    lineCount++;
+    demoOutput += text + '\n';
 
-    demoOutput = data.output;
+    if (phase !== null) {
+      currentPhase = phase;
+      const label = PHASE_LABELS[phase] || '';
+      if (label) {
+        status.className = 'live-status pending';
+        status.textContent = label;
+      }
+    }
+
+    term.innerHTML += colorizeLine(text) + '\n';
+    termBody.scrollTop = termBody.scrollHeight;
+  });
+
+  es.addEventListener('error', (e) => {
+    try {
+      const { message } = JSON.parse(e.data);
+      status.className = 'live-status err';
+      status.textContent = 'Error: ' + message;
+      term.innerHTML += '\n<span class="cy4-masked">ERROR: ' + message + '</span>\n';
+    } catch {
+      status.className = 'live-status err';
+      status.textContent = 'Connection lost';
+    }
+    es.close();
+    btn.disabled = false;
+    btn.classList.remove('loading');
+  });
+
+  es.addEventListener('done', (e) => {
+    es.close();
+    const { totalLines } = JSON.parse(e.data);
+
     status.className = 'live-status ok';
-    status.textContent = 'Demo complete — real SDK output below';
+    status.textContent = 'Demo complete — ' + totalLines + ' lines of live SDK output';
+    btn.classList.remove('loading');
 
-    // Typewrite the Phase 1 (encryption) output into the live terminal
-    const phase1 = extractSection(demoOutput, '[PHASE 1]', '[PHASE 2]');
-    const header = extractSection(demoOutput, 'CY4SECURE EXPLOIT VAULT DEMO', '[PHASE 1]');
-    const fullPhase1 = header + '\n\n' + phase1;
-    await typewrite(term, '$ docker exec cy4-challenge node exploit-vault-demo.mjs\n\n' + colorize(fullPhase1), 8);
-
-    // Populate clerk vs outsider
     const phase2 = extractSection(demoOutput, '[PHASE 2]', '[PHASE 3]');
     const phase3 = extractSection(demoOutput, '[PHASE 3]', '[PHASE 4]');
-    document.getElementById('clerkTerm').innerHTML = colorize(phase2);
-    document.getElementById('outsiderTerm').innerHTML = colorize(phase3);
+    document.getElementById('clerkTerm').innerHTML = phase2.split('\n').map(l => colorizeLine(l)).join('\n');
+    document.getElementById('outsiderTerm').innerHTML = phase3.split('\n').map(l => colorizeLine(l)).join('\n');
     document.getElementById('compareCallout').style.display = '';
 
-    // Populate full log
-    document.getElementById('fullTerm').innerHTML = colorize(demoOutput);
-    const lines = demoOutput.split('\n').length;
+    document.getElementById('fullTerm').innerHTML = demoOutput.split('\n').map(l => colorizeLine(l)).join('\n');
     const ciphers = (demoOutput.match(/CY41GH/g) || []).length;
     const masked = (demoOutput.match(/\[masked\]/g) || []).length;
     document.getElementById('fullTermFooter').innerHTML =
       '<span style="color:var(--accent);">&#x25cf;</span> ' +
-      lines + ' lines | ' +
+      totalLines + ' lines | ' +
       ciphers + ' ciphertext values | ' +
       masked + ' access denials';
 
-    // Resume after a beat
-    setTimeout(() => {
-      if (paused) togglePause();
-    }, 3000);
+    setTimeout(() => { if (paused) togglePause(); }, 4000);
+  });
 
-  } catch (e) {
+  es.onerror = () => {
+    if (es.readyState === EventSource.CLOSED) return;
     status.className = 'live-status err';
-    status.textContent = 'Error: ' + e.message;
-    term.textContent += '\nERROR: ' + e.message + '\n\nMake sure Docker is running and the server is at localhost:3007';
+    status.textContent = 'Connection failed — is the server running at localhost:3007?';
+    es.close();
     btn.disabled = false;
     btn.classList.remove('loading');
-  }
+  };
 }
 
 counter.textContent = '1 / ' + slides.length;

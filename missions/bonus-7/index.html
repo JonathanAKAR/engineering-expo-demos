@@ -20,7 +20,7 @@
   --border: rgba(255,255,255,0.08);
   --code-bg: #030308;
   --code-fg: #c9d1d9;
-  --kw: #ff7b72;
+  --kw: #60a5fa;
   --str: #a5d6ff;
   --fn: #d2a8ff;
   --cmt: #5a6270;
@@ -86,7 +86,7 @@ p, li { margin: 0; }
 }
 .slide-center .subtitle { margin-inline: auto; }
 .hl-accent { color: var(--accent); -webkit-text-fill-color: var(--accent); }
-.hl-threat { color: var(--threat); -webkit-text-fill-color: var(--threat); }
+.hl-threat { color: var(--fg); -webkit-text-fill-color: var(--fg); font-weight: 600; }
 .hl-cipher { color: var(--cipher); -webkit-text-fill-color: var(--cipher); }
 
 /* Stats */
@@ -100,7 +100,7 @@ p, li { margin: 0; }
   font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.2rem);
   font-weight: 800; font-variant-numeric: tabular-nums;
 }
-.stat-num.threat { color: var(--threat); }
+.stat-num.threat { color: var(--fg); }
 
 /* Impact list */
 .impact-list { list-style: none; padding: 0; margin: 1rem 0 0; display: flex; flex-direction: column; gap: 0.5rem; }
@@ -111,7 +111,7 @@ p, li { margin: 0; }
   content: ''; position: absolute; left: 0; top: 0.55em;
   width: 6px; height: 6px; border-radius: 50%;
 }
-.impact-list.threat-dots li::before { background: var(--threat); }
+.impact-list.threat-dots li::before { background: var(--primary); }
 .impact-list.accent-dots li::before { background: var(--accent); }
 
 /* Callout */
@@ -122,7 +122,7 @@ p, li { margin: 0; }
   font-size: 0.85rem; color: var(--fg); line-height: 1.6;
   backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
 }
-.callout.threat-callout { border-left-color: var(--threat); background: var(--threat-dim); }
+.callout.threat-callout { border-left-color: var(--primary); background: rgba(37,99,235,0.08); }
 
 /* Terminal */
 .terminal {
@@ -147,7 +147,7 @@ p, li { margin: 0; }
   line-height: 1.55; color: var(--code-fg); white-space: pre-wrap; word-break: break-all;
 }
 .term-body pre .cy4-cipher { color: var(--cipher); }
-.term-body pre .cy4-masked { color: var(--threat); font-weight: 600; }
+.term-body pre .cy4-masked { color: var(--fg-muted); font-weight: 600; font-style: italic; }
 .term-body pre .cy4-clear { color: var(--green); }
 .term-body pre .cy4-label { color: var(--accent); }
 .term-body pre .cy4-header { color: var(--num); font-weight: 600; }
@@ -220,8 +220,8 @@ p, li { margin: 0; }
   font-family: var(--font-mono); font-size: 0.68rem; margin-top: 0.4rem; min-height: 1.2em;
 }
 .live-status.ok { color: var(--accent); }
-.live-status.err { color: var(--threat); }
-.live-status.pending { color: var(--warn); }
+.live-status.err { color: var(--fg-muted); }
+.live-status.pending { color: var(--accent); }
 
 /* Nav */
 .nav {
@@ -307,7 +307,7 @@ p, li { margin: 0; }
   <!-- 2. WANNACRY -->
   <div class="slide slide-center" data-dur="14000">
     <div class="slide-inner">
-      <div class="eyebrow" style="color:var(--threat);">The Fallout &mdash; May 12, 2017</div>
+      <div class="eyebrow">The Fallout &mdash; May 12, 2017</div>
       <h2>WannaCry</h2>
       <p class="subtitle">One stolen exploit. <span class="hl-threat">Global impact.</span></p>
       <div class="stats">
@@ -567,8 +567,8 @@ p, li { margin: 0; }
           <div class="feat-label">Clerk (Authorized)</div>
           <p>Full plaintext access. CSA verified the grant and released the key.</p>
         </div>
-        <div class="feat" style="border-color:rgba(239,68,68,0.25);">
-          <div class="feat-label" style="color:var(--threat);">Outsider (Attacker)</div>
+        <div class="feat">
+          <div class="feat-label">Outsider (Attacker)</div>
           <p>[masked] on every field. No grant &rarr; no key &rarr; no data.</p>
         </div>
         <div class="feat" style="border-color:rgba(6,182,212,0.25);">

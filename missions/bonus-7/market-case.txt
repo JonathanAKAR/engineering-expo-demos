@@ -1,0 +1,27 @@
+The Market Case for Cy4Secure
+
+Who needs this
+
+Defense and intelligence agencies that store the nation's most sensitive data: classified exploits, personnel records, cyber intelligence, and citizen PII. Their contractors and supply chain vendors who handle that same data across thousands of systems and programs.
+
+Why now
+
+The last decade of breaches proves one pattern: perimeter defenses fail, and when they do, unencrypted data walks out the door. The threats are accelerating. Nation-state adversaries are inside government networks for months before detection. Insider threats bypass every firewall. And emerging technologies like quantum computing threaten to break today's standard encryption entirely.
+
+The breaches that prove the need
+
+1. Shadow Brokers / EternalBlue (April 2017): A group called the Shadow Brokers stole and publicly leaked EternalBlue, a classified NSA exploit targeting Windows SMB. One month later, attackers built it into WannaCry ransomware, which spread automatically across networks in 150+ countries, hitting hospitals, government agencies, and critical infrastructure. Estimated damages: $1-8 billion. The UK's NHS alone lost 92 million GBP, with 19,000 appointments cancelled. The stolen exploit was stored as readable data; field-level encryption would have rendered it useless to the thieves.
+   Source: WannaCry ransomware attack, Wikipedia (https://en.wikipedia.org/wiki/WannaCry_ransomware_attack); NAO Investigation: WannaCry and the NHS (https://www.nao.org.uk/press-release/investigation-wannacry-cyber-attack-and-the-nhs/)
+
+2. DNC Breach (2015-2016): Russian intelligence groups Cozy Bear (SVR) and Fancy Bear (GRU) penetrated the Democratic National Committee's network over the course of a year. They exfiltrated 20,000+ emails, opposition research, and donor records, all stored as plaintext. The leaks through WikiLeaks disrupted the 2016 presidential election. 12 GRU officers were indicted. Emails and documents sat unencrypted on compromised servers; with field-level encryption, stolen files would have been ciphertext.
+   Source: 2016 Election Hacking Fast Facts, CNN (https://www.cnn.com/us/2016-presidential-campaign-hacking-fast-facts); Senate Intelligence Committee Final Report, GovInfoSecurity (https://www.govinfosecurity.com/final-report-more-2016-russian-election-hacking-details-a-14848)
+
+3. SolarWinds Supply Chain Attack (2020): Russian SVR hackers compromised SolarWinds' Orion software updates, inserting a backdoor into routine patches that 18,000 organizations installed. Attackers maintained undetected access for 9 months inside the Department of Defense, Department of Homeland Security, Treasury, State, Energy, Justice, and the National Nuclear Security Administration. Estimated cleanup costs: up to $100 billion. The attackers moved freely through networks reading unencrypted government data for the better part of a year.
+   Source: The SolarWinds Cyberattack, Senate Republican Policy Committee (https://www.rpc.senate.gov/policy-papers/the-solarwinds-cyberattack); SolarWinds hack timeline, CSO Online (https://www.csoonline.com/article/570537/the-solarwinds-hack-timeline-who-knew-what-and-when.html)
+
+4. Pentagon DMDC Breach (2025-2026): Hackers exploited a vulnerability in the Defense Manpower Data Center's file-sharing systems, gaining access to personnel records stored in unencrypted format. The intrusion went undetected for 9 months. 2.76 million people were affected, with exposed data including full names, dates of birth, Social Security numbers, and military personnel information. The DMDC holds records on over 60 million people. This is the exact scenario Cy4Secure is built for: if those records had been encrypted at the field level, the breach would have yielded nothing but ciphertext.
+   Source: Pentagon breach exposed sensitive data on nearly 3 million people, ABC News (https://abcnews.com/Politics/pentagon-breach-exposed-sensitive-data-3-million-people/story?id=136832909); Pentagon personnel-data breach went undetected months, Defense One (https://defenseone.com/threats/2026/10/pentagon-personnel-data-breach-went-undetected-months/416421)
+
+The common thread
+
+In every case, the attackers got inside and the data was readable. Perimeter security failed, and there was no second line of defense at the data layer. Cy4Secure is that second line. With field-level encryption, every one of these breaches becomes an infrastructure incident instead of a data exposure event.

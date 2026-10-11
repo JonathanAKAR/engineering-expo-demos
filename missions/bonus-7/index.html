@@ -295,11 +295,11 @@ p, li { margin: 0; }
   <div class="slide" data-dur="14000">
     <div class="slide-inner">
       <div class="eyebrow">Case Study</div>
-      <h2>EternalBlue &mdash; The Breach That Changed Everything</h2>
+      <h2>EternalBlue: The Breach That Changed Everything</h2>
       <ul class="impact-list threat-dots" style="margin-top:1.25rem;">
-        <li>The NSA developed <strong>EternalBlue (MS17-010)</strong> &mdash; a remote code execution exploit targeting Windows SMB v1</li>
-        <li>Stored alongside dozens of other cyber weapons in a <strong>classified exploit database</strong> &mdash; as plaintext</li>
-        <li><strong>2016&ndash;2017:</strong> The Shadow Brokers stole and published the full exploit database</li>
+        <li>The NSA developed <strong>EternalBlue (MS17-010)</strong>, a remote code execution exploit targeting Windows SMB v1</li>
+        <li>Stored alongside dozens of other cyber weapons in a <strong>classified exploit database</strong> as plaintext</li>
+        <li><strong>2016 to 2017:</strong> The Shadow Brokers stole and published the full exploit database</li>
         <li>Every exploit was immediately readable and usable by anyone who downloaded the dump</li>
         <li><strong>May 12, 2017:</strong> EternalBlue was weaponized into <span class="hl-threat">WannaCry ransomware</span></li>
       </ul>
@@ -313,7 +313,7 @@ p, li { margin: 0; }
   <!-- 2. WANNACRY -->
   <div class="slide slide-center" data-dur="14000">
     <div class="slide-inner">
-      <div class="eyebrow">The Fallout &mdash; May 12, 2017</div>
+      <div class="eyebrow">The Fallout, May 12 2017</div>
       <h2>WannaCry</h2>
       <p class="subtitle">One stolen exploit. <span class="hl-threat">Global impact.</span></p>
       <div class="stats">
@@ -386,7 +386,7 @@ p, li { margin: 0; }
       </div>
       <div class="phase-explain">
         <strong>newRecordKeyId()</strong> generates a unique AES-256 key for each record.
-        <strong>encryptField()</strong> seals each field individually &mdash; the output is nomadic ciphertext
+        <strong>encryptField()</strong> seals each field individually. The output is nomadic ciphertext
         (<span class="hl-cipher">CY41GHFLE...</span>) that carries its own key reference.
         Metadata like codenames and CVEs stays in plaintext for searchability.
       </div>
@@ -434,7 +434,7 @@ p, li { margin: 0; }
         <div class="terminal">
           <div class="term-bar">
             <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
-            <span class="term-title">docker exec cy4-challenge &mdash; Phase 2</span>
+            <span class="term-title">docker exec cy4-challenge / Phase 2</span>
             <span class="phase-tag output">Live Output</span>
           </div>
           <div class="term-body" id="phase2TermBody">
@@ -444,7 +444,7 @@ p, li { margin: 0; }
       </div>
       <div class="phase-explain">
         <strong>decryptField(ciphertext, "clerk", column)</strong> sends a key request to the CSA.
-        The CSA checks its grant table &mdash; the clerk role has authorized access, so the key is released
+        The CSA checks its grant table. The clerk role has authorized access, so the key is released
         and the field decrypts to plaintext. The analyst sees the full exploit description, payload notes, and analysis.
       </div>
     </div>
@@ -455,7 +455,7 @@ p, li { margin: 0; }
     <div class="slide-inner wide">
       <div class="eyebrow">Phase 3 of 4</div>
       <h2>Attacker Attempts Access</h2>
-      <p class="subtitle" style="max-width:none">The <span class="hl-threat">outsider</span> role &mdash; representing the Shadow Brokers &mdash; calls the same API. The CSA denies every request.</p>
+      <p class="subtitle" style="max-width:none">The <span class="hl-threat">outsider</span> role, representing the Shadow Brokers, calls the same API. The CSA denies every request.</p>
       <div class="phase-grid">
         <div class="terminal">
           <div class="term-bar">
@@ -465,7 +465,7 @@ p, li { margin: 0; }
           </div>
           <div class="term-body">
             <pre><span class="code-cmt">// Same decryptField() call</span>
-<span class="code-cmt">// Different role &mdash; no CSA grant</span>
+<span class="code-cmt">// Different role, no CSA grant</span>
 <span class="code-kw">for</span> (<span class="code-kw">const</span> rec <span class="code-kw">of</span> encrypted) {
   <span class="code-kw">const</span> desc = <span class="code-kw">await</span> <span class="code-fn">decryptField</span>(
     rec.description,
@@ -492,7 +492,7 @@ p, li { margin: 0; }
         <div class="terminal">
           <div class="term-bar">
             <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
-            <span class="term-title">docker exec cy4-challenge &mdash; Phase 3</span>
+            <span class="term-title">docker exec cy4-challenge / Phase 3</span>
             <span class="phase-tag output">Live Output</span>
           </div>
           <div class="term-body" id="phase3TermBody">
@@ -502,7 +502,7 @@ p, li { margin: 0; }
       </div>
       <div class="phase-explain">
         The exact same <strong>decryptField()</strong> call, but with the <span class="hl-threat">"outsider"</span> role.
-        The CSA has no grant for this role &mdash; the key request is denied and every field returns
+        The CSA has no grant for this role. The key request is denied and every field returns
         <span class="hl-threat">[masked]</span>. Four exploits stolen, twelve encrypted fields, zero readable values.
       </div>
     </div>
@@ -543,7 +543,7 @@ p, li { margin: 0; }
         <div class="terminal">
           <div class="term-bar">
             <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
-            <span class="term-title">docker exec cy4-challenge &mdash; Phase 4</span>
+            <span class="term-title">docker exec cy4-challenge / Phase 4</span>
             <span class="phase-tag output">Live Output</span>
           </div>
           <div class="term-body" id="phase4TermBody">
@@ -552,7 +552,7 @@ p, li { margin: 0; }
         </div>
       </div>
       <div class="phase-explain">
-        Every key request is logged by the CSA &mdash; who requested it, which key, when, and whether it was granted or denied.
+        Every key request is logged by the CSA: who requested it, which key, when, and whether it was granted or denied.
         The <strong>auditor</strong> role demonstrates scoped access: what this role can read depends entirely on what the CSA grants.
         Unauthorized attempts are recorded and attributable.
       </div>
@@ -564,10 +564,10 @@ p, li { margin: 0; }
     <div class="slide-inner">
       <div class="eyebrow">Results</div>
       <h2>What the CSA Enforced</h2>
-      <div class="features" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+      <div class="features" style="grid-template-columns: repeat(2, 1fr); max-width: 720px;">
         <div class="feat">
           <div class="feat-label">Encrypted</div>
-          <p>4 exploit records, 3 sensitive fields each &mdash; 12 individually keyed values</p>
+          <p>4 exploit records, 3 sensitive fields each. 12 individually keyed values.</p>
         </div>
         <div class="feat">
           <div class="feat-label">Clerk (Authorized)</div>
@@ -575,7 +575,7 @@ p, li { margin: 0; }
         </div>
         <div class="feat">
           <div class="feat-label">Outsider (Attacker)</div>
-          <p>[masked] on every field. No grant &rarr; no key &rarr; no data.</p>
+          <p>[masked] on every field. No grant, no key, no data.</p>
         </div>
         <div class="feat">
           <div class="feat-label">Auditor</div>
@@ -584,7 +584,7 @@ p, li { margin: 0; }
       </div>
       <div class="callout" style="margin-top:1.25rem;">
         <strong>Same ciphertext, same database, same API.</strong>
-        The only variable is who the CSA trusts. No grant means no key &mdash; the data stays sealed.
+        The only variable is who the CSA trusts. No grant means no key. The data stays sealed.
       </div>
     </div>
   </div>
@@ -593,12 +593,12 @@ p, li { margin: 0; }
   <div class="slide" data-dur="14000">
     <div class="slide-inner">
       <div class="eyebrow">What We Didn't Show</div>
-      <h2>After the Breach &mdash; What Else Happens</h2>
+      <h2>After the Breach: What Else Happens</h2>
       <p class="subtitle" style="max-width:none">The live demo proved encryption, access control, and denial. Here is what the CSA also enforces that we did not demonstrate.</p>
-      <div class="features" style="margin-top:1.25rem;">
+      <div class="features" style="margin-top:1.25rem; grid-template-columns: repeat(2, 1fr); max-width: 720px;">
         <div class="feat">
           <div class="feat-label">Full Audit Trail</div>
-          <p>Every key request is logged &mdash; who asked, which field, when, and whether it was granted or denied. Unauthorized attempts are recorded and attributable.</p>
+          <p>Every key request is logged: who asked, which field, when, and whether it was granted or denied. Unauthorized attempts are recorded and attributable.</p>
         </div>
         <div class="feat">
           <div class="feat-label">Breach Containment</div>
@@ -606,11 +606,11 @@ p, li { margin: 0; }
         </div>
         <div class="feat">
           <div class="feat-label">Nomadic Protection</div>
-          <p>The ciphertext carries its own key reference. Copied to a USB, emailed, backed up to another server &mdash; it stays encrypted wherever it goes, without any additional configuration.</p>
+          <p>The ciphertext carries its own key reference. Copied to a USB, emailed, or backed up to another server, it stays encrypted wherever it goes.</p>
         </div>
         <div class="feat">
           <div class="feat-label">Persistent After Compromise</div>
-          <p>An attacker inside the network still cannot read the data. Perimeter security failed &mdash; but the encryption did not. The CSA remains the only path to plaintext.</p>
+          <p>An attacker inside the network still cannot read the data. Perimeter security failed, but the encryption did not. The CSA remains the only path to plaintext.</p>
         </div>
       </div>
     </div>
@@ -642,7 +642,7 @@ p, li { margin: 0; }
       </div>
       <div class="callout" style="max-width:560px; margin:1.25rem auto 0; text-align:left;">
         A stolen database is ciphertext. A copied file is ciphertext. A compromised backup is ciphertext.
-        The only path to plaintext is through the CSA &mdash; and the CSA opens only for those you explicitly trust.
+        The only path to plaintext is through the CSA, and the CSA opens only for those you explicitly trust.
       </div>
     </div>
   </div>

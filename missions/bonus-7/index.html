@@ -103,7 +103,8 @@ p, li { margin: 0; }
 .stat-num.threat { color: var(--fg); }
 
 /* Impact list */
-.impact-list { list-style: none; padding: 0; margin: 1rem 0 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.impact-list { list-style: none; padding: 0; margin: 1rem 0 0; display: flex; flex-direction: column; gap: 0.5rem; text-align: left; }
+.slide-center .impact-list { max-width: 540px; margin-inline: auto; }
 .impact-list li {
   font-size: 0.88rem; padding-left: 1.4rem; position: relative; color: var(--fg-muted);
 }
@@ -571,8 +572,8 @@ p, li { margin: 0; }
           <div class="feat-label">Outsider (Attacker)</div>
           <p>[masked] on every field. No grant &rarr; no key &rarr; no data.</p>
         </div>
-        <div class="feat" style="border-color:rgba(6,182,212,0.25);">
-          <div class="feat-label" style="color:var(--cipher);">Auditor</div>
+        <div class="feat">
+          <div class="feat-label">Auditor</div>
           <p>Scoped access. Visibility determined by CSA grant configuration.</p>
         </div>
       </div>

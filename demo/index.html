@@ -254,12 +254,16 @@ p, li { margin: 0; }
   height: 3px; z-index: 11; background: rgba(255,255,255,0.04);
 }
 .progress-fill { height: 100%; width: 0; background: linear-gradient(90deg, #2563EB 0%, #06B6D4 100%); }
-.site-logo {
-  position: fixed; top: 14px; right: 20px; z-index: 12;
-  height: 32px; width: auto; opacity: 0.85; pointer-events: none;
+.slide-logo {
+  height: 28px; width: auto; opacity: 0.85;
+  float: right; margin: 0 0 0.5rem 1rem;
+}
+.slide-center .slide-logo {
+  float: none; display: block;
+  margin: 0 auto 0.75rem;
 }
 .pause-badge {
-  position: fixed; top: 12px; right: 90px;
+  position: fixed; top: 12px; right: 20px;
   font-family: var(--font-mono); font-size: 0.6rem;
   color: var(--fg-muted); background: var(--surface-raised);
   padding: 3px 8px; border-radius: 4px; border: 1px solid var(--border);
@@ -276,7 +280,6 @@ p, li { margin: 0; }
 }
 </style>
 
-<img src="cy4-logo.png" alt="CY4 Data Labs" class="site-logo">
 <div class="slideshow" id="slideshow">
 
   <!-- 0. TITLE -->
@@ -881,6 +884,14 @@ function onSlideEnter(slideIndex) {
     }
   }
 }
+
+document.querySelectorAll('.slide-inner').forEach(inner => {
+  const logo = document.createElement('img');
+  logo.src = 'cy4-logo.png';
+  logo.alt = 'CY4 Data Labs';
+  logo.className = 'slide-logo';
+  inner.prepend(logo);
+});
 
 counter.textContent = '1/' + slides.length;
 resetTimer();

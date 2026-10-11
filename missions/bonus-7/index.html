@@ -1,36 +1,39 @@
 <title>Cy4Secure Technical Demo</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Noto+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap">
 <style>
 :root {
   color-scheme: dark;
-  --bg: #0a0b10;
-  --surface: #13151e;
-  --surface-raised: #1a1d2a;
-  --fg: #e5e3df;
-  --fg-muted: #7d8193;
-  --accent: #2dd4bf;
-  --accent-dim: rgba(45,212,191,0.12);
+  --bg: #04060f;
+  --surface: rgba(255,255,255,0.04);
+  --surface-raised: rgba(255,255,255,0.07);
+  --fg: #f8fafc;
+  --fg-muted: #94a3b8;
+  --accent: #06b6d4;
+  --accent-dim: rgba(6,182,212,0.12);
+  --primary: #2563eb;
+  --primary-dark: #1e3a8a;
   --threat: #ef4444;
   --threat-dim: rgba(239,68,68,0.12);
   --warn: #f59e0b;
-  --cipher: #a78bfa;
-  --cipher-dim: rgba(167,139,250,0.12);
-  --border: #1f2235;
-  --code-bg: #0d0e15;
+  --cipher: #06b6d4;
+  --cipher-dim: rgba(6,182,212,0.12);
+  --border: rgba(255,255,255,0.08);
+  --code-bg: #030308;
   --code-fg: #c9d1d9;
   --kw: #ff7b72;
   --str: #a5d6ff;
   --fn: #d2a8ff;
   --cmt: #5a6270;
   --num: #79c0ff;
-  --green: #7ee787;
-  --font-display: 'Sora', system-ui, sans-serif;
-  --font-body: 'Noto Sans', system-ui, sans-serif;
-  --font-mono: 'IBM Plex Mono', 'Consolas', monospace;
+  --green: #10b981;
+  --font-display: 'Inter', 'SF Pro Display', system-ui, sans-serif;
+  --font-body: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', ui-monospace, monospace;
 }
 html { height: 100%; }
 body {
   background: var(--bg); color: var(--fg);
+  background-image: radial-gradient(ellipse at 50% 0%, rgba(37,99,235,0.08) 0%, transparent 60%);
   font-family: var(--font-body);
   height: 100%; overflow: hidden; margin: 0; padding: 0; line-height: 1.6;
 }
@@ -52,32 +55,46 @@ body {
 .slide-inner.wide { max-width: 1080px; }
 
 h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; margin: 0; }
-h1 { font-size: clamp(2.2rem, 6vw, 3.5rem); font-weight: 800; letter-spacing: -0.025em; }
-h2 { font-size: clamp(1.3rem, 3.5vw, 1.85rem); font-weight: 700; letter-spacing: -0.015em; }
+h1 {
+  font-size: clamp(2.2rem, 6vw, 3.5rem); font-weight: 800; letter-spacing: -0.025em;
+  background: linear-gradient(135deg, #2563EB 0%, #06B6D4 100%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+h2 {
+  font-size: clamp(1.3rem, 3.5vw, 1.85rem); font-weight: 700; letter-spacing: -0.015em;
+  background: linear-gradient(135deg, #2563EB 0%, #06B6D4 100%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
 h3 { font-size: 1rem; font-weight: 600; }
 p, li { margin: 0; }
 
 .slide-center { text-align: center; }
 .slide-center .slide-inner { margin: 0 auto; }
 .eyebrow {
-  font-family: var(--font-mono); font-size: 0.75rem; font-weight: 500;
-  color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase;
+  font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600;
+  color: var(--accent); letter-spacing: 0.14em; text-transform: uppercase;
   margin-bottom: 1rem;
+  display: inline-block;
+  padding: 4px 12px;
+  background: rgba(6,182,212,0.08);
+  border: 1px solid rgba(6,182,212,0.2);
+  border-radius: 100px;
 }
 .subtitle {
   font-size: clamp(0.9rem, 2vw, 1.05rem);
   color: var(--fg-muted); margin-top: 0.75rem; max-width: 600px; line-height: 1.65;
 }
 .slide-center .subtitle { margin-inline: auto; }
-.hl-accent { color: var(--accent); }
-.hl-threat { color: var(--threat); }
-.hl-cipher { color: var(--cipher); }
+.hl-accent { color: var(--accent); -webkit-text-fill-color: var(--accent); }
+.hl-threat { color: var(--threat); -webkit-text-fill-color: var(--threat); }
+.hl-cipher { color: var(--cipher); -webkit-text-fill-color: var(--cipher); }
 
 /* Stats */
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
 .stat {
-  text-align: center; background: var(--surface); border: 1px solid var(--border);
-  border-radius: 10px; padding: 1rem 0.75rem;
+  text-align: center; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px; padding: 1rem 0.75rem;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
 }
 .stat-num {
   font-family: var(--font-display); font-size: clamp(1.6rem, 4vw, 2.2rem);
@@ -100,16 +117,18 @@ p, li { margin: 0; }
 /* Callout */
 .callout {
   margin-top: 1.25rem; padding: 0.85rem 1.15rem;
-  border-left: 3px solid var(--accent); background: var(--accent-dim);
-  border-radius: 0 8px 8px 0;
+  border-left: 3px solid var(--primary); background: rgba(37,99,235,0.08);
+  border-radius: 0 12px 12px 0;
   font-size: 0.85rem; color: var(--fg); line-height: 1.6;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
 }
 .callout.threat-callout { border-left-color: var(--threat); background: var(--threat-dim); }
 
 /* Terminal */
 .terminal {
-  background: var(--code-bg); border-radius: 10px; overflow: hidden;
-  border: 1px solid var(--border);
+  background: var(--code-bg); border-radius: 12px; overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
 }
 .term-bar {
   padding: 8px 14px; display: flex; align-items: center; gap: 7px;
@@ -150,10 +169,10 @@ p, li { margin: 0; }
 .phase-tag {
   font-family: var(--font-mono); font-size: 0.55rem; font-weight: 600;
   letter-spacing: 0.08em; text-transform: uppercase;
-  padding: 2px 6px; border-radius: 3px; margin-left: auto;
+  padding: 3px 8px; border-radius: 100px; margin-left: auto;
 }
-.phase-tag.script { background: var(--cipher-dim); color: var(--cipher); }
-.phase-tag.output { background: var(--accent-dim); color: var(--accent); }
+.phase-tag.script { background: rgba(37,99,235,0.15); color: #60a5fa; }
+.phase-tag.output { background: rgba(6,182,212,0.15); color: #22d3ee; }
 .phase-explain {
   margin-top: 0.85rem; font-size: 0.82rem; color: var(--fg-muted); line-height: 1.6;
 }
@@ -162,8 +181,13 @@ p, li { margin: 0; }
 /* Features grid */
 .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.85rem; margin-top: 1.25rem; }
 .feat {
-  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;
   padding: 1rem 1.1rem;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  transition: border-color 0.3s, background 0.3s;
+}
+.feat:hover {
+  background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.14);
 }
 .feat-label {
   font-family: var(--font-mono); font-size: 0.68rem; font-weight: 600;
@@ -175,16 +199,18 @@ p, li { margin: 0; }
 /* Run button */
 .run-btn {
   display: inline-flex; align-items: center; gap: 8px;
-  margin-top: 0.75rem; padding: 9px 18px;
-  background: var(--accent); color: var(--bg); border: none; border-radius: 8px;
+  margin-top: 0.75rem; padding: 10px 22px;
+  background: linear-gradient(135deg, #2563EB 0%, #06B6D4 100%);
+  color: #fff; border: none; border-radius: 10px;
   font-family: var(--font-mono); font-size: 0.78rem; font-weight: 600;
-  cursor: pointer; transition: opacity 0.2s;
+  cursor: pointer; transition: opacity 0.2s, box-shadow 0.3s;
+  box-shadow: 0 4px 16px rgba(37,99,235,0.3), 0 0 0 1px rgba(255,255,255,0.1) inset;
 }
-.run-btn:hover { opacity: 0.85; }
-.run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.run-btn:hover { opacity: 0.9; box-shadow: 0 4px 24px rgba(37,99,235,0.45), 0 0 0 1px rgba(255,255,255,0.15) inset; }
+.run-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
 .run-btn .spinner {
-  width: 14px; height: 14px; border: 2px solid rgba(0,0,0,0.2);
-  border-top-color: var(--bg); border-radius: 50%;
+  width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff; border-radius: 50%;
   animation: spin 0.6s linear infinite; display: none;
 }
 .run-btn.loading .spinner { display: block; }
@@ -205,19 +231,19 @@ p, li { margin: 0; }
 }
 .nav-btn {
   width: 34px; height: 34px; border-radius: 50%;
-  background: var(--surface-raised); border: 1px solid var(--border);
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
   color: var(--fg-muted); font-size: 1rem; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  transition: background 0.2s, color 0.2s; flex-shrink: 0;
+  transition: background 0.2s, color 0.2s, border-color 0.2s; flex-shrink: 0;
 }
-.nav-btn:hover { background: var(--surface); color: var(--fg); }
+.nav-btn:hover { background: rgba(255,255,255,0.1); color: var(--fg); border-color: rgba(255,255,255,0.18); }
 .dots { display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; }
 .dot {
   width: 7px; height: 7px; border-radius: 50%;
   background: var(--border); border: none; cursor: pointer;
   transition: background 0.3s, transform 0.2s; padding: 0;
 }
-.dot.active { background: var(--accent); transform: scale(1.3); }
+.dot.active { background: var(--primary); transform: scale(1.3); }
 .counter {
   font-family: var(--font-mono); font-size: 0.65rem;
   color: var(--fg-muted); min-width: 36px; text-align: right; flex-shrink: 0;
@@ -226,7 +252,7 @@ p, li { margin: 0; }
   position: fixed; top: 0; left: 0; right: 0;
   height: 3px; z-index: 11; background: rgba(255,255,255,0.04);
 }
-.progress-fill { height: 100%; width: 0; background: var(--accent); }
+.progress-fill { height: 100%; width: 0; background: linear-gradient(90deg, #2563EB 0%, #06B6D4 100%); }
 .pause-badge {
   position: fixed; top: 12px; right: 16px;
   font-family: var(--font-mono); font-size: 0.6rem;
@@ -545,7 +571,7 @@ p, li { margin: 0; }
           <div class="feat-label" style="color:var(--threat);">Outsider (Attacker)</div>
           <p>[masked] on every field. No grant &rarr; no key &rarr; no data.</p>
         </div>
-        <div class="feat" style="border-color:rgba(167,139,250,0.25);">
+        <div class="feat" style="border-color:rgba(6,182,212,0.25);">
           <div class="feat-label" style="color:var(--cipher);">Auditor</div>
           <p>Scoped access. Visibility determined by CSA grant configuration.</p>
         </div>
